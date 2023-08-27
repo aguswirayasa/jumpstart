@@ -2,6 +2,7 @@ import { NextAuthProvider } from "@/lib/providers";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <NextAuthProvider>
-        <body className={montserrat.className}>{children}</body>
+        <ReactQueryProvider>
+          <body className={montserrat.className}>{children}</body>
+        </ReactQueryProvider>
       </NextAuthProvider>
     </html>
   );

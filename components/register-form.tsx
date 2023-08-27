@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
+import { useQueryClient, useMutation } from "react-query";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +22,7 @@ import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { Montserrat } from "next/font/google";
 import { GoogleLoginButton } from "react-social-login-buttons";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -37,6 +40,9 @@ const formSchema = z.object({
 });
 const montserrat = Montserrat({ subsets: ["latin"] });
 const RegistrationForm = () => {
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,12 +52,38 @@ const RegistrationForm = () => {
       lastName: "",
     },
   });
+  const queryClient = useQueryClient();
+
+  const signupMutation = useMutation(
+    async (formData: z.infer<typeof formSchema>) => {
+      // Simulate signup process
+      const response = await axios.post("/api/sign-up", formData);
+
+      if (response.data.id) {
+        router.push(`/verify-email?id=${response.data.id}`);
+        setSuccessMessage(response.data.message);
+      } else setErrorMessage(response.data.error);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch data after successful mutation if needed
+
+        queryClient.invalidateQueries("userData");
+      },
+    }
+  );
   function onSubmit(values: z.infer<typeof formSchema>) {
-    alert(JSON.stringify(values));
+    signupMutation.mutate(values);
   }
   return (
     <div className="space-y-3 ">
       <div className="text-center mb-10 grid place-items-center">
+        {successMessage && (
+          <div className="text-success text-green-500">{successMessage}</div>
+        )}
+        {errorMessage && (
+          <div className="text-error text-red-500">{errorMessage}</div>
+        )}
         <Link href={"/"}>
           <Image src={"/icon.png"} width={100} height={100} alt="Jumstart" />
         </Link>
@@ -126,8 +158,12 @@ const RegistrationForm = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-primary w-full rounded-full">
-                Continue
+              <Button
+                type="submit"
+                disabled={signupMutation.isLoading} // Disable the button when loading
+                className="bg-primary w-full rounded-full"
+              >
+                {signupMutation.isLoading ? "Loading..." : "Continue"}
               </Button>
               <span className="flex justify-center items-center gap-1">
                 <p className="font-normal text-sm md:text-base">

@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { GoogleLoginButton } from "react-social-login-buttons";
+import { Toaster, toast } from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { Montserrat } from "next/font/google";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -32,6 +34,9 @@ const formSchema = z.object({
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const LoginForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,17 +44,47 @@ const LoginForm = () => {
       password: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    signIn("credentials", {
-      email: values.email,
-      password: values.password,
-      redirect: true,
-      callbackUrl: "/",
-    });
+  useEffect(() => {
+    // Show toast when verification is successful
+    if (searchParams.get("verificationSuccess")) {
+      toast.success(
+        "Email verification successful, You now can login to your account"
+      );
+    }
+  }, []);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    try {
+      const response = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+      console.log(response);
+
+      if (response?.error) {
+        const errorMessage = response.error.toString();
+        if (errorMessage.startsWith("INACTIVE_USER:")) {
+          const userId = errorMessage.split(":")[1]; // Extract user ID from error message
+          router.push(`/verify-email?id=${userId}`); // Redirect with user ID
+        } else {
+          toast.error("Invalid email or password. Please try again.");
+        }
+      } else {
+        router.push("/");
+      }
+      // Handle successful sign-in
+    } catch (error) {
+      toast.error("Invalid email or password. Please try again.");
+    } finally {
+      setIsLoading(false);
+      form.reset();
+    }
   }
 
   return (
     <div className="space-y-3">
+      <Toaster />
       <div className="text-center  grid place-items-center">
         <Link href={"/"}>
           <Image src={"/icon.png"} width={100} height={100} alt="Jumstart" />
@@ -90,7 +125,11 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="bg-primary w-full rounded-full">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="bg-primary w-full rounded-full"
+          >
             Continue
           </Button>
         </form>
