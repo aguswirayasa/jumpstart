@@ -1,4 +1,4 @@
-import ExpiredTokenPage from "@/components/refresh-token";
+import ExpiredTokenPage from "@/components/customer/sign-up/refresh-token";
 
 const page = () => {
   return (

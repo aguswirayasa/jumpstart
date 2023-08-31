@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 
 const ExpiredTokenPage = () => {
   const searchParams = useSearchParams();

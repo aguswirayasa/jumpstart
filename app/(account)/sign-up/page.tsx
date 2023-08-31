@@ -1,5 +1,4 @@
-import RegistrationForm from "@/components/register-form";
-import AuthFooter from "@/components/ui/auth-footer";
+import RegistrationForm from "@/components/customer/sign-up/register-form";
 
 const page = () => {
   return (
