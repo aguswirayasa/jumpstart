@@ -5,10 +5,17 @@ import prismadb from "./prismadb";
 import { compare } from "bcrypt";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+interface User {
+  id: string;
+  email: string;
+  role: string; // Ensure 'role' property is defined
+  // Other properties...
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 3600,
   },
   providers: [
     CredentialsProvider({
@@ -28,6 +35,7 @@ export const authOptions: NextAuthOptions = {
         const user = await prismadb.users.findUnique({
           where: { email: credentials.email },
         });
+        prismadb.$disconnect;
         if (!user) {
           return null;
         }
@@ -45,6 +53,7 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user.id + "",
+          role: user.role,
           email: user.email,
           name: user.firstName + " " + user.lastName,
           image: user.avatarUrl,
@@ -55,7 +64,6 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       async profile(profile) {
-        console.log(profile);
         let user = await prismadb.users.findFirst({
           where: {
             email: profile.email,
@@ -74,8 +82,10 @@ export const authOptions: NextAuthOptions = {
             },
           });
         }
+        prismadb.$disconnect;
         return {
           id: user.id, // Example: Assuming the 'sub' property is the user's ID
+          role: user.role,
           name: user.firstName + " " + user.lastName, // Example: Assuming the 'name' property is the user's name
           email: user.email, // Example: Assuming the 'email' property is the user's email
           image: user.avatarUrl, // Example: Assuming the 'email' property is the user's email
@@ -83,7 +93,17 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.role = user.role;
+      return token;
+    },
 
+    async session({ session, token }) {
+      if (session?.user) session.user.role = token.role;
+      return session;
+    },
+  },
   pages: {
     signIn: "/sign-in",
   },

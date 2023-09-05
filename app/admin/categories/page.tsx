@@ -7,9 +7,8 @@ const page = () => {
   return (
     <div>
       <Toaster />
-      <Modal buttonLabel="Add Category" title="Add Category">
-        <AddCategoryForm />
-      </Modal>
+      <h2 className="text-2xl font-bold">Add Category</h2>
+      <AddCategoryForm />
     </div>
   );
 };

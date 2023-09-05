@@ -1,27 +1,31 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { signIn, useSession } from "next-auth/react";
+import { GrCart } from "react-icons/gr";
 
 import { useHydration } from "@/hooks/useHydration";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import ProfileNav from "./profile-nav";
 
 const Navbar = () => {
   const isMounted = useHydration();
   const session = useSession();
-  console.log(session);
   const user = session.data?.user;
+
   return (
     <>
       {isMounted && (
-        <nav className="flex items-center  px-4 py-2 shadow-md">
-          <div className="flex-shrink-0">
-            <Image src="/logo.png" width={200} height={200} alt="Logo" />
-          </div>
+        <nav className="flex items-center  py-2 shadow-md px-10">
+          <Link href={"/"}>
+            <div className="flex-shrink-0">
+              <Image src="/logo.png" width={200} height={200} alt="Logo" />
+            </div>
+          </Link>
 
           <div className="flex flex-1 mx-4 relative">
             <Input
@@ -32,20 +36,19 @@ const Navbar = () => {
               <BsSearch />
             </div>
           </div>
-          {session.data ? (
-            <>
+          {user ? (
+            <div className="flex space-x-10 justify-between items-center">
+              <span className="text-2xl">
+                <GrCart />
+              </span>
               <div className="flex gap-3 items-center">
-                <Avatar>
-                  <AvatarImage
-                    src={user?.image || "/default-avatar.jpg"}
-                    about="avatar"
-                  />
-
-                  <AvatarFallback>{user?.email || ""}</AvatarFallback>
-                </Avatar>
-                <p className="font-medium">{user?.name || ""}</p>
+                <ProfileNav
+                  avatar={user?.user?.image || ""}
+                  name={user?.user?.name || ""}
+                  email={user?.user?.email || ""}
+                />
               </div>
-            </>
+            </div>
           ) : (
             <>
               <div className="flex">

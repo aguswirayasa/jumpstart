@@ -20,14 +20,8 @@ const AutoPlayCarousel = ({ images }: AutoPlayCarouselProps) => {
       className="w-full "
     >
       {images.map((imageUrl, index) => (
-        <div key={index} className="max-h-[315px] w-full ">
-          <Image
-            src={imageUrl}
-            alt={imageUrl}
-            width={400}
-            height={200}
-            className=" w-full h-full  rounded-md"
-          />
+        <div key={index} className="h-[160px] md:h-[315px] w-full relative">
+          <Image src={imageUrl} alt={imageUrl} fill className="  rounded-md" />
         </div>
       ))}
     </Carousel>

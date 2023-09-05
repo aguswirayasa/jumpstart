@@ -1,144 +1,15 @@
 "use client";
+
 import ProductCard from "@/components/ui/product-card";
+import { ProductCardProps } from "@/types";
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 
-const products = [
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/jnqmyzmqlelobwckmmnw",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/lqx9bhuhezeejbma7peg",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/wi2mcnytdtw0glnrumoj",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/fij3eey4w1auvzwf0k4x",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/jnqmyzmqlelobwckmmnw",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/lqx9bhuhezeejbma7peg",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/wi2mcnytdtw0glnrumoj",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/fij3eey4w1auvzwf0k4x",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/jnqmyzmqlelobwckmmnw",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/lqx9bhuhezeejbma7peg",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/wi2mcnytdtw0glnrumoj",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/fij3eey4w1auvzwf0k4x",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/dp9hfum7dxyai7cp5rja",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/jnqmyzmqlelobwckmmnw",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/lqx9bhuhezeejbma7peg",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-  {
-    url: "jumpstart-product/wi2mcnytdtw0glnrumoj",
-    title: `Seagate - Game Drive for PlayStation Consoles 2TB External USB 3.2 Gen
-  1 Portable Hard Drive - Black`,
-    price: "999.99",
-  },
-];
+interface SpecialOfferCarouselProps {
+  products: ProductCardProps[];
+}
 
-const SpecialOfferCarousel = () => {
+const SpecialOfferCarousel = ({ products }: SpecialOfferCarouselProps) => {
   const cardsPerSlide = 6;
 
   const chunkArray = (array: any[], chunkSize: number) => {
@@ -165,10 +36,10 @@ const SpecialOfferCarousel = () => {
           {chunk.map(
             (
               product: {
-                url: string;
                 id: string;
-                title: string;
-                price: string;
+                name: string;
+                price: number;
+                thumbnail: string;
               },
               productIndex: React.Key | null | undefined
             ) => (
@@ -177,11 +48,12 @@ const SpecialOfferCarousel = () => {
                 key={productIndex}
               >
                 <ProductCard
-                  productImage={product.url}
-                  productId={product.id}
-                  productName={product.title}
-                  productPrice={product.price}
-                />
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  thumbnail={product.thumbnail}
+                />{" "}
+                {/* Pass productImages as a prop */}
               </div>
             )
           )}

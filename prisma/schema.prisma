@@ -39,7 +39,7 @@ model ActivateToken{
 model Category {
    id           String  @id @default(uuid())
   name          String
-  thumbnail     String?
+  thumbnail     String
   products      Product[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -48,7 +48,9 @@ model Category {
 model Product {
   id             String  @id @default(uuid())
   name           String
-  description    String @db.Text    
+  description    String @db.Text   
+  stock          Int    @default(0)
+  thumbnail      String
   price          Float
   categoryId     String
   category       Category        @relation(fields: [categoryId], references: [id])
@@ -57,12 +59,13 @@ model Product {
   productImages  ProductImage[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  variantOption  VariantOption[]
 
   @@index([categoryId])
 }
 
 model Specification {
- id          String  @id @default(uuid())
+  id          String  @id @default(uuid())
   name       String
   value      String
   productId  String
@@ -90,6 +93,17 @@ model ProductImage {
   url       String
   productId String
   product   Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+}
+
+
+model VariantOption {
+  id         String  @id @default(uuid())
+  name       String
+  stock      Int
+  productId  String?
+  product    Product?  @relation(fields: [productId], references: [id])
 
   @@index([productId])
 }

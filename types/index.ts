@@ -15,12 +15,21 @@ export type Users = {
   avatar: string;
 };
 export type Product = {
+  id?: string;
   name: string;
   description: string;
+  thumbnail: string;
+  stock: string;
   price: string;
   categoryId: string;
   specifications: Specification[];
   images: Image[];
+  variantOptions: Variant[];
+};
+export type Variant = {
+  name: string;
+
+  stock: number;
 };
 export type Categories = {
   id: string;
@@ -38,13 +47,16 @@ export type Cloudinary = {
 };
 export type Image = {
   url: string;
+  id?: string;
 };
 export type Category = {
   name: string;
+  thumbnail: string | "";
+  id?: string;
 };
 export type ProductCardProps = {
-  productId: string;
-  productImage: string;
-  productName: string;
-  productPrice: string;
+  id: string;
+  thumbnail: string | null;
+  name: string;
+  price: number;
 };

@@ -8,8 +8,10 @@ import { UseFormReturn, useForm } from "react-hook-form";
 import axios from "axios";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { IoClose } from "react-icons/io5";
+import { TiDelete } from "react-icons/ti";
+import { AiFillPlusCircle } from "react-icons/ai";
 
-import { Categories, Image, Product, Specification } from "@/types";
+import { Categories, Image, Product, Specification, Variant } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -36,6 +38,8 @@ const productSchema = z.object({
   name: z.string().min(2, "Please enter product name"),
   description: z.string().min(4, "Please enter product description"),
   price: z.string().min(1, "Please enter product price"),
+  thumbnail: z.string().min(1, "Please enter product thumbnail"),
+  stock: z.string().min(1, "Please enter product stock"),
   categoryId: z.string(),
   specifications: z
     .array(
@@ -52,17 +56,42 @@ const productSchema = z.object({
       })
     )
     .nonempty("Please upload an image"),
+  variant: z.array(z.string()).optional(),
+  variantOptions: z
+    .array(
+      z.object({
+        name: z.string(),
+
+        stock: z.string().min(0),
+      })
+    )
+    .optional(),
 });
+
 const AddProductForm = ({ categories }: { categories: Categories[] }) => {
   const queryClient = useQueryClient();
 
   const [specName, setSpecName] = useState("");
   const [specValue, setSpecValue] = useState("");
+  const [variantName, setVariantName] = useState("");
   const [displayedSpecifications, setDisplayedSpecifications] = useState<
     Specification[]
   >([]);
+  const [thumbnail, setThumbnail] = useState<string>("");
+  const [variants, setVariants] = useState([
+    {
+      name: "",
 
-  const [uploadedImages, setUploadedImages] = useState<Image[]>([]); // State to store uploaded image URLs
+      stock: 0,
+    },
+  ]);
+
+  // Function to add a new empty variant object
+  const addVariant = () => {
+    setVariants([...variants, { name: "", stock: 0 }]);
+  };
+
+  const [uploadedImages, setUploadedImages] = useState<Image[]>([]);
 
   const form: UseFormReturn<Product> = useForm({
     resolver: zodResolver(productSchema),
@@ -70,18 +99,22 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
       name: "",
       description: "",
       price: "",
+      thumbnail: "",
+      stock: "",
       categoryId: "",
       specifications: [] as Specification[],
       images: [] as Image[],
+      variantOptions: [] as Variant[],
     },
   });
 
   const addProductMutation = useMutation(
     async (productData: Product) => {
       try {
+        const data = { ...productData, variants };
         const response = await axios.post(
           "/api/admin/product/add-product",
-          productData
+          data
         );
 
         if (response.status === 200) {
@@ -99,6 +132,8 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
         form.reset();
         setDisplayedSpecifications([]);
         setUploadedImages([]);
+        setThumbnail("");
+        setVariants([]);
       },
     }
   );
@@ -111,6 +146,10 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
   const addImage = (newImage: Image) => {
     form.setValue("images", form.getValues("images").concat(newImage));
   };
+  const addThumbnail = (thumbnail: string) => {
+    form.setValue("thumbnail", thumbnail);
+  };
+
   const onSubmit = async (data: Product) => {
     addProductMutation.mutate(data);
   };
@@ -121,7 +160,7 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-12 w-full"
       >
-        <div className="col-span-12 md:col-span-5">
+        <div className="col-span-12 md:col-span-5 space-y-3">
           <h2 className="font-medium text-xl ">Product Information</h2>
           <FormField
             control={form.control}
@@ -186,6 +225,23 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
           />
           <FormField
             control={form.control}
+            name="stock"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Product Stock</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Product Stock"
+                    {...field}
+                    className="col-span-1"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="description"
             render={({ field }) => (
               <FormItem>
@@ -201,6 +257,66 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
               </FormItem>
             )}
           />
+          <div className="grid">
+            <FormLabel>Product Thumbnail</FormLabel>
+            <CldUploadWidget
+              uploadPreset="jumpstart"
+              onSuccess={(result: any) => {
+                const { public_id } = result.info;
+                setThumbnail(public_id);
+                addThumbnail(public_id);
+                form.clearErrors("thumbnail");
+              }}
+            >
+              {({ open }) => {
+                function handleOnClick(e: React.FormEvent) {
+                  e.preventDefault();
+                  open();
+                }
+                return (
+                  <>
+                    {!thumbnail && (
+                      <Button
+                        className="button my-3 w-fit"
+                        onClick={handleOnClick}
+                      >
+                        Upload a Thumbnail
+                      </Button>
+                    )}
+                  </>
+                );
+              }}
+            </CldUploadWidget>
+
+            <p className="text-sm font-medium ">Thumbnail :</p>
+            <p className="text-sm font-medium text-destructive">
+              {form.formState.errors.thumbnail?.message}
+            </p>
+            {thumbnail && (
+              <div className="flex flex-wrap gap-3 my-3">
+                <div className="relative">
+                  <CldImage
+                    width="300"
+                    height="300"
+                    src={thumbnail}
+                    className="rounded-lg object-center aspect-video h-[300px]  select-none"
+                    alt="Description of my image"
+                  />
+                  <span
+                    className="bg-gray-600/40 rounded-full m-1 text-white absolute top-0 right-0 cursor-pointer"
+                    onClick={() => {
+                      deleteImageFromCloudinary(thumbnail);
+
+                      form.setValue("thumbnail", "");
+                      setThumbnail("");
+                    }}
+                  >
+                    <IoClose />
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex flex-col items-center gap-4 col-span-12 md:col-span-2">
           <hr className="flex-1 border-e border-gray-300" />
@@ -268,6 +384,54 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="mb-3">
+            <h2 className="font-medium text-xl mb-3">Product Color Variant</h2>
+
+            {variants.map((variant, index) => (
+              <div key={index} className="flex gap-1 items-center mb-3">
+                <p className="text-gray-400 text-sm">{index + 1}.</p>
+                <Input
+                  placeholder="Name"
+                  value={variant.name}
+                  onChange={(e) => {
+                    const updatedVariants = [...variants];
+                    updatedVariants[index].name = e.target.value;
+                    setVariants(updatedVariants);
+                  }}
+                  className="col-span-1"
+                />
+
+                <Input
+                  placeholder="Stock"
+                  value={form.getValues(`variantOptions.${index}.stock`)}
+                  onChange={(e) => {
+                    const updatedVariants = [...variants];
+                    updatedVariants[index].stock = parseInt(e.target.value);
+                    setVariants(updatedVariants);
+                  }}
+                  className="col-span-1"
+                />
+                <span
+                  className="text-red-500 text-xl cursor-pointer select-none"
+                  onClick={() => {
+                    const updatedVariants = [...variants];
+                    updatedVariants.splice(index, 1); // Remove the variant at the specified index
+                    setVariants(updatedVariants);
+                  }}
+                >
+                  <TiDelete />
+                </span>
+              </div>
+            ))}
+            <span
+              onClick={addVariant}
+              className="flex gap-1 items-center select-none cursor-pointer text-primary"
+            >
+              <AiFillPlusCircle />
+              <p>Add Variant Option</p>
+            </span>
           </div>
           <div className="flex flex-col">
             <h2 className="font-medium text-xl ">Product Specification</h2>

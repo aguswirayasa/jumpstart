@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     };
     const result = await smtpTransport.sendMail(mailOptions);
   }
-
+  prismadb.$disconnect;
   // Return a success response
   return new NextResponse(
     JSON.stringify({ message: "User registered successfully", id: newUser.id }),
