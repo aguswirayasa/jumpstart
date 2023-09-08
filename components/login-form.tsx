@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Montserrat } from "next/font/google";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 
@@ -34,6 +34,8 @@ const formSchema = z.object({
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const LoginForm = () => {
+  const auth = useSession();
+  const user = auth.data?.user;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,6 +54,17 @@ const LoginForm = () => {
       );
     }
   }, []);
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    if (user.role === "ADMIN") {
+      router.push("/admin/dashboard");
+    } else {
+      router.push("/");
+    }
+  }, [user]);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
@@ -71,7 +84,7 @@ const LoginForm = () => {
           toast.error("Invalid email or password. Please try again.");
         }
       } else {
-        router.push("/");
+        router.refresh();
       }
       // Handle successful sign-in
     } catch (error) {
@@ -141,12 +154,7 @@ const LoginForm = () => {
       </div>
 
       <GoogleLoginButton
-        onClick={() =>
-          signIn("google", {
-            redirect: true,
-            callbackUrl: "/",
-          })
-        }
+        onClick={() => signIn("google")}
         style={{ borderRadius: "9999px" }}
         align="center"
         text="Continue with Google"

@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import Navbar from "@/components/customer/navbar/navbar";
+import { ToastProvider } from "@/providers/ToastProvider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -22,6 +22,7 @@ export default function RootLayout({
       <NextAuthProvider>
         <ReactQueryProvider>
           <body className={montserrat.className}>
+            <ToastProvider />
             <main>{children}</main>
           </body>
         </ReactQueryProvider>

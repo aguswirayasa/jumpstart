@@ -4,7 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 import prismadb from "./prismadb";
 import { compare } from "bcrypt";
 import bcrypt from "bcrypt";
-import { redirect } from "next/navigation";
 interface User {
   id: string;
   email: string;
@@ -57,6 +56,9 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.firstName + " " + user.lastName,
           image: user.avatarUrl,
+          username: user.firstName + " " + user.lastName,
+          emails: user.email,
+          avatar: user.avatarUrl,
         };
       },
     }),
@@ -89,6 +91,9 @@ export const authOptions: NextAuthOptions = {
           name: user.firstName + " " + user.lastName, // Example: Assuming the 'name' property is the user's name
           email: user.email, // Example: Assuming the 'email' property is the user's email
           image: user.avatarUrl, // Example: Assuming the 'email' property is the user's email
+          username: user.firstName + " " + user.lastName,
+          emails: user.email,
+          avatar: user.avatarUrl,
         };
       },
     }),

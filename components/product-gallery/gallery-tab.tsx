@@ -2,10 +2,11 @@ import { CldImage } from "next-cloudinary";
 import { Tab } from "@headlessui/react";
 
 import { cn } from "@/lib/utils";
-import { Image } from "@/types";
+import { Image as Images } from "@/types";
+import Image from "next/image";
 
 interface GalleryTabProps {
-  image: Image;
+  image: Images;
 }
 
 const GalleryTab: React.FC<GalleryTabProps> = ({ image }) => {
@@ -14,7 +15,7 @@ const GalleryTab: React.FC<GalleryTabProps> = ({ image }) => {
       {({ selected }) => (
         <div>
           <span className="absolute h-full w-full aspect-square inset-0 overflow-hidden rounded-md ">
-            <CldImage
+            <Image
               fill
               src={image.url}
               alt=""

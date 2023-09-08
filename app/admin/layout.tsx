@@ -1,5 +1,5 @@
 import AdminSideBar from "@/components/admin/navbar/admin-side-bar";
-import Navbar from "@/components/customer/navbar/navbar";
+import Navbar from "@/components/customer/navigation/navbar";
 import AuthFooter from "@/components/ui/auth-footer";
 import Image from "next/image";
 import Link from "next/link";

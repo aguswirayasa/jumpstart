@@ -2,13 +2,13 @@
 
 import React from "react";
 
-import { Image } from "@/types";
+import { Image as Images } from "@/types";
 import { Tab } from "@headlessui/react";
 import GalleryTab from "./gallery-tab";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 interface ProductGalleryProps {
-  images: Image[];
+  images: Images[];
   thumbnail: string;
 }
 
@@ -26,7 +26,7 @@ const ProductGallery = ({ images, thumbnail }: ProductGalleryProps) => {
         {images.map((image) => (
           <Tab.Panel key={image.id}>
             <div className="aspect-square relative h-full w-full sm:rounded-lg overflow-hidden">
-              <CldImage
+              <Image
                 fill
                 src={image.url}
                 alt="Image"

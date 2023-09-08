@@ -1,13 +1,36 @@
-import Navbar from "@/components/customer/navbar/navbar";
 import React from "react";
 
-const AccountLayout = async ({ children }: { children: React.ReactNode }) => {
+import Navbar from "@/components/customer/navigation/navbar";
+import CartProviders from "@/providers/CartProvider";
+import Footer from "@/components/customer/navigation/footer";
+import prismadb from "@/lib/prismadb";
+const CustomerLayout = async ({ children }: { children: React.ReactNode }) => {
+  async function getCategories() {
+    "use server";
+    try {
+      const categories = await prismadb.category.findMany({
+        take: 10,
+        select: {
+          name: true,
+        },
+      });
+      return categories;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await prismadb.$disconnect();
+    }
+  }
+  const categories = await getCategories();
   return (
-    <div className="h-screen">
-      <Navbar />
-      <main className=" w-full">{children}</main>
-    </div>
+    <CartProviders>
+      <div className="h-screen">
+        <Navbar categories={categories!} />
+        <main className=" w-full">{children}</main>
+        <Footer />
+      </div>
+    </CartProviders>
   );
 };
 
-export default AccountLayout;
+export default CustomerLayout;

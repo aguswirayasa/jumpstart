@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { signOut } from "next-auth/react";
 
 const navLinks = [
   {
@@ -127,10 +128,10 @@ export default function AdminSideBar() {
                   </Tooltip>
                 ))}
                 <Tooltip>
-                  <li className="rounded-sm flex items-center">
-                    <Link
-                      href="/logout"
+                  <li className="rounded-sm flex items-center cursor-pointer select-none">
+                    <span
                       className="flex items-center p-2 space-x-3 rounded-md"
+                      onClick={() => signOut({ callbackUrl: "/sign-in" })}
                     >
                       <TooltipTrigger asChild>
                         <svg
@@ -159,7 +160,7 @@ export default function AdminSideBar() {
                         </TooltipContent>
                       )}
                       {!open && <span className="text-gray-700">Logout</span>}
-                    </Link>
+                    </span>
                   </li>
                 </Tooltip>
               </TooltipProvider>

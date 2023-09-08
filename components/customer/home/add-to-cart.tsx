@@ -1,6 +1,6 @@
 "use client";
 
-import { CldImage } from "next-cloudinary";
+import { useShoppingCart, DebugCart } from "use-shopping-cart";
 import React, { useState } from "react";
 import { FaCartPlus } from "react-icons/fa";
 import { BsFillBookmarkPlusFill } from "react-icons/bs";
@@ -8,24 +8,43 @@ import { BsFillBookmarkPlusFill } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Variant } from "@/types";
+import { Product } from "use-shopping-cart/core";
+import { toast } from "react-hot-toast";
 
 interface AddToCartProps {
   stock: number;
   price: number;
   thumbnail: string;
+  name: string;
+  id: string;
   variantOptions: Variant[];
 }
 
 const AddToCart = ({
   stock,
   price,
-
+  thumbnail,
+  name,
+  id,
   variantOptions,
 }: AddToCartProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [subtotal, setSubtotal] = useState<number>(price);
-  const [variants, setVariants] = useState("");
-  const [selected, setSelected] = useState("");
+  const [variants, setVariants] = useState(variantOptions[0]?.name || "");
+  const [selected, setSelected] = useState(
+    variantOptions[0]?.name + "" + 0 || ""
+  );
+
+  const [variantStock, setVariantStock] = useState(stock);
+  const { addItem, cartDetails } = useShoppingCart();
+  const product: Product = {
+    currency: "USD",
+    id: variants || name + "   " + "true",
+    name,
+    image: thumbnail,
+    price: price * 100,
+    sku: id,
+  };
 
   return (
     <div>
@@ -41,6 +60,8 @@ const AddToCart = ({
                 onClick={() => {
                   setVariants(variant.name);
                   setSelected(variant.name + index);
+                  setVariantStock(variant.stock);
+                  setQuantity(1);
                 }}
                 className={`flex items-center  ${
                   selected === variant.name + index
@@ -82,7 +103,7 @@ const AddToCart = ({
             }}
           />
           <Button
-            disabled={quantity >= stock}
+            disabled={quantity >= variantStock}
             className="rounded-none"
             onClick={() => {
               setQuantity((prev) => prev + 1);
@@ -91,26 +112,47 @@ const AddToCart = ({
           >
             +
           </Button>
-          {stock === 0 ? (
+          {variantStock === 0 ? (
             <p className="font-medium text-lg ms-3">Sold Out</p>
           ) : (
-            <p className="font-medium text-lg ms-3">Available {stock} units</p>
+            <p className="font-medium text-lg ms-3">
+              Available {variantStock} units
+            </p>
           )}
         </div>
         <p className="text-xl font-semibold my-3">Subtotal : ${subtotal}</p>
         <div className="space-y-3">
           <div className="space-x-3">
-            <Button className="space-x-3">
+            <Button
+              className="space-x-3 select-none"
+              disabled={variantStock === 0}
+              onClick={() => {
+                addItem(product, { count: quantity });
+                toast.success("Item added to cart!");
+              }}
+            >
               <FaCartPlus />
               <p className="font-semibold">Add to cart</p>
             </Button>
-            <Button className="space-x-3 ">
+
+            <Button
+              className="space-x-3 select-none"
+              disabled={variantStock === 0}
+            >
               <BsFillBookmarkPlusFill />
               <p className="font-semibold">Add to wishlist</p>
             </Button>
           </div>
-          <Button className="space-x-3 bg-yellow-500 w-full">
-            <p className="font-bold">Buy Now</p>
+
+          <Button
+            className="space-x-3 bg-yellow-500 w-full select-none"
+            disabled={variantStock === 0}
+          >
+            {variantStock === 0 ? (
+              <p className="font-bold">Sold Out</p>
+            ) : (
+              <p className="font-bold">Buy Now</p>
+            )}
           </Button>
         </div>
       </div>

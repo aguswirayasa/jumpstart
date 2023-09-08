@@ -22,6 +22,7 @@ model Users{
   active    Boolean @default(false)
   ActivateToken ActivateToken[]
   reviews  Review[]
+  orders   Orders[]
 }
 
 model ActivateToken{
@@ -60,6 +61,7 @@ model Product {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   variantOption  VariantOption[]
+  orderItem OrderItem[]
 
   @@index([categoryId])
 }
@@ -105,5 +107,39 @@ model VariantOption {
   productId  String?
   product    Product?  @relation(fields: [productId], references: [id])
 
+  @@index([productId])
+}
+
+model Orders {
+  id        String    @id @default(uuid())
+  orderItems OrderItem[] // Relation to OrderItem model
+  isPaid     Boolean   @default(false)
+  phone      String    @default("")
+  address    String    @default("")
+  totalPrice Float       @default(0)
+  createdAt  DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  userEmail  String?   // Change the field name to "userEmail"
+  user       Users?     @relation(fields: [userEmail], references: [email]) // Update the relation to use "userEmail"
+
+  @@index([userEmail])
+}
+
+
+model OrderItem {
+  id              String  @id @default(uuid())
+  
+  // Define a many-to-one relationship to the product
+  productId       String
+  productVariant  String?
+  product         Product @relation(fields: [productId], references: [id])
+  
+  // Define a many-to-one relationship to the order
+  orderId         String
+  order           Orders   @relation(fields: [orderId], references: [id])
+
+
+
+  @@index([orderId])
   @@index([productId])
 }

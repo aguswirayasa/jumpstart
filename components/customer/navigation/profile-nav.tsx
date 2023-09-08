@@ -25,8 +25,6 @@ const ProfileNav = ({ name, avatar, email }: ProfileNavProps) => {
       <HoverCardTrigger className="cursor-pointer">
         <Avatar>
           <AvatarImage src={avatar || "/default-avatar.jpg"} about="avatar" />
-
-          <AvatarFallback>{name || ""}</AvatarFallback>
         </Avatar>
       </HoverCardTrigger>
       <HoverCardContent className="w-fit me-10 ">
@@ -37,8 +35,6 @@ const ProfileNav = ({ name, avatar, email }: ProfileNavProps) => {
                 src={avatar || "/default-avatar.jpg"}
                 about="avatar"
               />
-
-              <AvatarFallback>{name || ""}</AvatarFallback>
             </Avatar>
             <div>
               <p className="font-bold">{name}</p>
@@ -59,7 +55,10 @@ const ProfileNav = ({ name, avatar, email }: ProfileNavProps) => {
               <p className="text-black ">Setting</p>
             </li>
             <li className="grid  gap-2 items-center border-t-2 border-gray-100 p-3">
-              <Button variant={"destructive"} onClick={() => signOut()}>
+              <Button
+                variant={"destructive"}
+                onClick={() => signOut({ callbackUrl: "/sign-in" })}
+              >
                 Log Out
               </Button>
             </li>

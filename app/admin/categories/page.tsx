@@ -1,14 +1,23 @@
-import AddCategoryForm from "@/components/admin/products/add-category-form";
-import Modal from "@/components/ui/modal";
 import React from "react";
-import { Toaster } from "react-hot-toast";
+import { format } from "date-fns";
 
-const page = () => {
+import { CategoriesClient } from "@/components/admin/categories/table/table-client";
+import { getCategories } from "@/lib/server-utils";
+import { CategoriesColumn } from "@/components/admin/categories/table/columns";
+
+const page = async () => {
+  const categories = await getCategories();
+  const formattedCategories: CategoriesColumn[] = categories!.map((item) => ({
+    id: item.id,
+    name: item.name,
+    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+  }));
+
   return (
-    <div>
-      <Toaster />
-      <h2 className="text-2xl font-bold">Add Category</h2>
-      <AddCategoryForm />
+    <div className="flex-col">
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <CategoriesClient data={formattedCategories} />
+      </div>
     </div>
   );
 };

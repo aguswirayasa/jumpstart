@@ -9,14 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CldImage } from "next-cloudinary";
 import { Category } from "@/types";
+import Image from "next/image";
 
 const CategoryCard = ({ name, thumbnail, id }: Category) => {
   return (
     <Card className="rounded-none border-gray-200 hover:scale-110 cursor-pointer transition-colors duration-200">
       <CardHeader className="grid place-items-center">
-        <CldImage
+        <Image
           src={thumbnail ? thumbnail : "none"}
           alt={name}
           width={100}

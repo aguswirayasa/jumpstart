@@ -1,43 +1,45 @@
 "use client";
 
-import React from "react";
-
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-
-import { Button } from "./button";
-import { useHydration } from "@/hooks/useHydration";
+import { Button } from "@/components/ui/button";
 
 interface ModalProps {
-  children: React.ReactNode;
   title: string;
-  buttonLabel: string;
+  description: string;
+  isOpen: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
 }
 
-const Modal = ({ children, title, buttonLabel }: ModalProps) => {
-  const isMounted = useHydration();
+export const Modal: React.FC<ModalProps> = ({
+  title,
+  description,
+  isOpen,
+  onClose,
+  children,
+}) => {
+  const onChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+    }
+  };
+
   return (
-    <>
-      {isMounted && (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant={"default"}>{buttonLabel}</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{title}</DialogTitle>
-            </DialogHeader>
-            <div>{children}</div>
-          </DialogContent>
-        </Dialog>
-      )}
-    </>
+    <Dialog open={isOpen} onOpenChange={onChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <div>{children}</div>
+      </DialogContent>
+    </Dialog>
   );
 };
-
-export default Modal;
