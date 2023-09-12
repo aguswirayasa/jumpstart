@@ -1,4 +1,5 @@
 import React from "react";
+import { getServerSession } from "next-auth";
 
 import Navbar from "@/components/customer/navigation/navbar";
 import CartProviders from "@/providers/CartProvider";
@@ -22,8 +23,10 @@ const CustomerLayout = async ({ children }: { children: React.ReactNode }) => {
     }
   }
   const categories = await getCategories();
+  const session = await getServerSession();
+  const email = session?.user.email;
   return (
-    <CartProviders>
+    <CartProviders email={email || "no-login"}>
       <div className="h-screen">
         <Navbar categories={categories!} />
         <main className=" w-full">{children}</main>

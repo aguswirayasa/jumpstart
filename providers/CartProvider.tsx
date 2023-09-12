@@ -5,9 +5,10 @@ import { CartProvider } from "use-shopping-cart";
 import { useHydration } from "@/hooks/useHydration";
 interface ProvidersProps {
   children: React.ReactNode;
+  email: string;
 }
 
-const CartProviders = ({ children }: ProvidersProps) => {
+const CartProviders = ({ children, email }: ProvidersProps) => {
   const isMounted = useHydration();
 
   if (!isMounted) {
@@ -19,7 +20,7 @@ const CartProviders = ({ children }: ProvidersProps) => {
       stripe={process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!}
       currency={"USD"}
       shouldPersist={true}
-      persistKey="local"
+      persistKey={email}
     >
       {children}
     </CartProvider>

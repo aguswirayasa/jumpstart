@@ -1,4 +1,5 @@
 import CartItem from "@/components/customer/cart/cart-item";
+import CartShipping from "@/components/customer/cart/cart-shipping";
 import CartSummary from "@/components/customer/cart/cart-summary";
 import React from "react";
 
@@ -11,7 +12,8 @@ const page = () => {
           <CartItem />
         </div>
 
-        <div className="col-span-12 md:col-span-4">
+        <div className="col-span-12 md:col-span-4 space-y-3">
+          <CartShipping />
           <CartSummary />
         </div>
       </div>

@@ -1,4 +1,6 @@
+import { Address } from "@/types";
 import prismadb from "./prismadb";
+import { error } from "console";
 
 export async function decrementStock(
   productId: string,
@@ -55,11 +57,11 @@ export async function decrementStock(
       if (newProductStock < 0) {
         throw new Error(`Insufficient stock for product: ${productId}`);
       }
-
+      const updatedSold = product.sold + quantity;
       // Update the product's stock
       await tx.product.update({
         where: { id: product.id },
-        data: { stock: newProductStock },
+        data: { stock: newProductStock, sold: updatedSold },
       });
     });
 
@@ -110,6 +112,92 @@ export async function getCustomer() {
     return customers;
   } catch (error) {
     console.log(error);
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getProfile(email: string) {
+  try {
+    const profile = await prismadb.users.findUnique({
+      where: { email },
+      select: {
+        avatarUrl: true,
+        firstName: true,
+        lastName: true,
+        gender: true,
+        birthday: true,
+        email: true,
+        id: true,
+      },
+    });
+
+    return profile; // You might want to return the profile here.
+  } catch (error) {
+    // Handle errors appropriately
+    console.log(error);
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+export async function addAddress(address: Address, id: string) {
+  try {
+    await prismadb.shippingAddress.create({
+      data: {
+        city: address.city,
+        country: address.country,
+        postalCode: address.postalCode,
+        street: address.street,
+        state: address.state,
+        userId: id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+export async function updateAddress(address: Address, id: string) {
+  try {
+    await prismadb.shippingAddress.update({
+      where: {
+        id: id,
+      },
+      data: {
+        city: address.city,
+        country: address.country,
+        postalCode: address.postalCode,
+        street: address.street,
+        state: address.state,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getShippingAddress(uid: string) {
+  try {
+    const address = await prismadb.shippingAddress.findMany({
+      where: {
+        userId: uid,
+      },
+      select: {
+        city: true,
+        country: true,
+        postalCode: true,
+        street: true,
+        state: true,
+        id: true,
+      },
+    });
+    return address;
+  } catch (error) {
+    console.error(error);
+    return [];
   } finally {
     await prismadb.$disconnect();
   }

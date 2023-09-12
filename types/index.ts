@@ -60,3 +60,20 @@ export type ProductCardProps = {
   name: string;
   price: number;
 };
+
+export type Profile = {
+  firstName: string;
+  uid?: string;
+  lastName: string;
+  birthDay: Date;
+  gender: string;
+};
+
+export type Address = {
+  id?: string;
+  street: string;
+  state: string;
+  city: string;
+  country: string;
+  postalCode: string;
+};

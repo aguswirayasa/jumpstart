@@ -3,8 +3,14 @@ import Stripe from "stripe";
 import { CartDetails } from "use-shopping-cart/core";
 import { stripe } from "@/lib/stripe";
 import { getServerSession } from "next-auth";
+import { Address } from "@/types";
 
 type OrderData = { productId: any; quantity: number; variantName: string };
+interface CheckoutRequest {
+  cartDetails: CartDetails;
+  totalPrice: number;
+  shippingAddress: Address;
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,7 +23,8 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
-  const cartDetails: CartDetails = await request.json();
+  const { cartDetails, totalPrice, shippingAddress }: CheckoutRequest =
+    await request.json();
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   const orderData: OrderData[] = [];
 
@@ -62,6 +69,8 @@ export async function POST(request: NextRequest) {
     metadata: {
       orderData: JSON.stringify(orderData),
       email: auth?.user?.email,
+      totalPrice: totalPrice,
+      shippingAddress: JSON.stringify(shippingAddress),
     },
   });
 

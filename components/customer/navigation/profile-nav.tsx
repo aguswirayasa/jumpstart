@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 interface ProfileNavProps {
   name: string;
   avatar: string;
@@ -42,18 +43,20 @@ const ProfileNav = ({ name, avatar, email }: ProfileNavProps) => {
             </div>
           </div>
           <ul className="mt-5">
-            <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1">
+            <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
               <BiSolidBookmarkHeart />
               <p className="text-black ">Wishlist</p>
             </li>
-            <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1">
+            <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
               <BsCartCheckFill />
               <p className="text-black ">Orders </p>
             </li>
-            <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1">
-              <BsFillGearFill />
-              <p className="text-black ">Setting</p>
-            </li>
+            <Link href={"/user/setting"}>
+              <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
+                <BsFillGearFill />
+                <p className="text-black ">Setting</p>
+              </li>
+            </Link>
             <li className="grid  gap-2 items-center border-t-2 border-gray-100 p-3">
               <Button
                 variant={"destructive"}

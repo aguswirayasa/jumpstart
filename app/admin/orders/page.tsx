@@ -7,34 +7,32 @@ import React from "react";
 
 const page = async () => {
   const orders = await getOrders();
-  const products = orders
-    ?.map((order) =>
-      order.orderItems
-        .map((item) => {
-          const productName = item.product.name;
-          const variantName = item.productVariant;
+  const formattedOrders: OrdersColumn[] = orders!.map((item) => {
+    const products = item.orderItems
+      .map((orderItem) => {
+        const productName = orderItem.product.name;
+        const variantName = orderItem.productVariant;
 
-          // Check if a variant name exists
-          if (!variantName?.includes("true") && variantName) {
-            return `${productName} (${variantName})`;
-          } else {
-            return productName;
-          }
-        })
-        .join("\n")
-    )
-    .join("\n");
+        // Check if a variant name exists
+        if (!variantName?.includes("true") && variantName) {
+          return `${productName} (${variantName})`;
+        } else {
+          return productName;
+        }
+      })
+      .join("\n");
 
-  const formattedOrders: OrdersColumn[] = orders!.map((item) => ({
-    id: item.id,
-    address: item.address,
-    customerName: item.user?.firstName + " " + item.user?.lastName,
-    phoneNumber: item.phone,
-    status: item.isPaid ? "Completed" : "Unpaid",
-    totalPrice: "$" + item.totalPrice,
-    products: products!,
-    createdAt: format(item.createdAt, "MMMM do, yyyy"),
-  }));
+    return {
+      id: item.id,
+      address: item.address,
+      customerName: item.user?.firstName + " " + item.user?.lastName,
+      phoneNumber: item.phone,
+      status: item.isPaid ? "Completed" : "Unpaid",
+      totalPrice: "$" + item.totalPrice,
+      products: products,
+      createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    };
+  });
 
   console.log();
   return (

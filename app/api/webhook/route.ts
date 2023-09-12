@@ -6,6 +6,7 @@ import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
 import { decrementStock } from "@/lib/server-utils";
 import { getSession } from "next-auth/react";
+import { Address } from "@/types";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -24,22 +25,25 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
-  const address = session?.customer_details?.address;
-
+  console.log("WEBHOOK");
+  console.log(session.metadata?.shippingAddress);
+  const shippingAddress: Address = JSON.parse(
+    session?.metadata?.shippingAddress || ""
+  );
+  console.log(shippingAddress);
   const addressComponents = [
-    address?.line1,
-    address?.line2,
-    address?.city,
-    address?.state,
-    address?.postal_code,
-    address?.country,
+    shippingAddress.street,
+    shippingAddress.city,
+    shippingAddress.state,
+    shippingAddress.country,
+    shippingAddress.postalCode,
   ];
 
   const addressString = addressComponents.filter((c) => c !== null).join(", ");
 
   if (event.type === "checkout.session.completed") {
     const orderDataJSON = session.metadata?.orderData;
-    console.log("user id :", session.metadata?.userId);
+    const totalPrice = Number(session.metadata?.totalPrice);
     if (orderDataJSON) {
       try {
         const orderItems = JSON.parse(orderDataJSON);
@@ -50,6 +54,7 @@ export async function POST(req: Request) {
             phone: session.customer_details?.phone || "",
             address: addressString || "",
             userEmail: session.metadata?.email, // Associate the order with the user
+            totalPrice: Number((totalPrice / 100).toFixed(2)) || 0,
           },
         });
 
@@ -62,6 +67,7 @@ export async function POST(req: Request) {
           await prismadb.orderItem.create({
             data: {
               productId: orderItem.productId,
+              quantity: orderItem.quantity,
               orderId: newOrder.id,
               productVariant: !orderItem.variantName.includes("true")
                 ? orderItem.variantName

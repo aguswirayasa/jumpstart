@@ -6,7 +6,11 @@ import * as z from "zod";
 import { useMutation, useQueryClient } from "react-query";
 import { UseFormReturn, useForm } from "react-hook-form";
 import axios from "axios";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
+import {
+  CldImage,
+  CldUploadWidget,
+  CldUploadWidgetResults,
+} from "next-cloudinary";
 import { IoClose } from "react-icons/io5";
 import { TiDelete } from "react-icons/ti";
 import { AiFillPlusCircle } from "react-icons/ai";
@@ -32,7 +36,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "../../ui/badge";
 import { deleteImageFromCloudinary } from "@/lib/utils";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const productSchema = z.object({
   name: z.string().min(2, "Please enter product name"),
@@ -73,7 +77,6 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
 
   const [specName, setSpecName] = useState("");
   const [specValue, setSpecValue] = useState("");
-  const [variantName, setVariantName] = useState("");
   const [displayedSpecifications, setDisplayedSpecifications] = useState<
     Specification[]
   >([]);
@@ -262,9 +265,10 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             <CldUploadWidget
               uploadPreset="jumpstart"
               onSuccess={(result: any) => {
-                const { public_id } = result.info;
-                setThumbnail(public_id);
-                addThumbnail(public_id);
+                console.log(result);
+                const { secure_url } = result.info;
+                setThumbnail(secure_url);
+                addThumbnail(secure_url);
                 form.clearErrors("thumbnail");
               }}
             >
@@ -328,12 +332,12 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             <CldUploadWidget
               uploadPreset="jumpstart"
               onSuccess={(result: any) => {
-                const { public_id } = result.info;
+                const { secure_url } = result.info;
                 setUploadedImages((prevImages) => [
                   ...prevImages,
-                  { url: public_id },
+                  { url: secure_url },
                 ]);
-                addImage({ url: public_id });
+                addImage({ url: secure_url });
                 form.clearErrors("images");
               }}
             >
