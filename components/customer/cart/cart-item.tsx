@@ -20,7 +20,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const CartItem = () => {
-  const { cartDetails, incrementItem, decrementItem } = useShoppingCart();
+  const {
+    cartDetails,
+    incrementItem,
+    decrementItem,
+    removeItem,
+    setItemQuantity,
+  } = useShoppingCart();
 
   return (
     <div className="border border-gray-200 shadow-lg rounded-lg">
@@ -50,7 +56,10 @@ const CartItem = () => {
                   {!itemId.includes("true") && <Badge>{itemId} </Badge>}
                 </CardContent>
                 <CardFooter className="">
-                  <span className="absolute top-0 right-5 flex items-center m-3">
+                  <span
+                    className="absolute top-0 right-5 flex items-center m-3 cursor-pointer"
+                    onClick={() => removeItem(itemId)}
+                  >
                     <GrClose />
                   </span>
                   <span className="absolute bottom-0 right-0 m-5 text-primary text-xl flex gap-1 items-center">
@@ -63,6 +72,9 @@ const CartItem = () => {
                     <Input
                       className="w-10 text-center border-none text-black"
                       value={itemDetails.quantity}
+                      onChange={(e) =>
+                        setItemQuantity(itemId, Number(e.target.value))
+                      }
                     />
 
                     <CustomIcon

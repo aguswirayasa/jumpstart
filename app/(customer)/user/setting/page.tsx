@@ -18,6 +18,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
 import { AddressModal } from "@/components/modal/add-address-modal";
+import Link from "next/link";
 
 const page = async () => {
   const session = await getServerSession();
@@ -54,10 +55,12 @@ const page = async () => {
                   <CustomIcon icon={BsFillSuitHeartFill} color="text-red-500" />
                   Wishlist
                 </li>
-                <li className="flex gap-3">
-                  <CustomIcon icon={FaBoxesStacked} color="text-primary" />
-                  Order History
-                </li>
+                <Link href={"/user/orders-history"}>
+                  <li className="flex gap-3">
+                    <CustomIcon icon={FaBoxesStacked} color="text-primary" />
+                    Order History
+                  </li>
+                </Link>
               </ul>
             </div>
           </Card>

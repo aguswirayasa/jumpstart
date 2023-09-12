@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ShippingAddressModal } from "@/components/modal/shipping-address-modal";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { useStore } from "zustand";
 import { useCheckoutStore } from "@/lib/store";
 
 const CartShipping = () => {
@@ -40,7 +39,7 @@ const CartShipping = () => {
         isOpen={isOpen}
         onClose={() => setIsOpen(!isOpen)}
         addresses={shippingAddress || []}
-        selectedAddress={address.id || ""}
+        selectedAddress={address?.id || ""}
       />
       <Card
         className="hover:bg-black/10 transition-all duration-200 cursor-pointer"
@@ -53,13 +52,19 @@ const CartShipping = () => {
             className="col-span-1"
             color="text-primary"
           />
-          <div className="col-span-5">
-            <p>{address.street}</p>
-            <p>
-              {address.city}, {address.state}, {address.country}
-            </p>
-            <p>{address.postalCode}</p>
-          </div>
+          {address ? (
+            <div className="col-span-5">
+              <p>{address.street}</p>
+              <p>
+                {address.city}, {address.state}, {address.country}
+              </p>
+              <p>{address.postalCode}</p>
+            </div>
+          ) : (
+            <div className="col-span-5">
+              <p className="text-gray-500">Select an address</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </>

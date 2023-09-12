@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { Address } from "@/types";
 import { useCheckoutStore } from "@/lib/store";
+import Link from "next/link";
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -22,12 +24,9 @@ export const ShippingAddressModal: React.FC<AlertModalProps> = ({
   isOpen,
   onClose,
   addresses,
-  loading,
   selectedAddress,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const { address } = useCheckoutStore();
-  const [isSelected, setIsSelected] = useState<string>("");
   const setAddress = useCheckoutStore((state) => state.setAddress);
 
   useEffect(() => {
@@ -46,35 +45,48 @@ export const ShippingAddressModal: React.FC<AlertModalProps> = ({
       onClose={onClose}
     >
       <div>
-        <RadioGroup defaultValue="comfortable">
-          {addresses.map((item, index) => (
-            <Card key={index}>
-              <label
-                onClick={() => {
-                  setAddress(item);
-                  setIsSelected(item.id!);
-                }}
-              >
-                <CardContent className="grid grid-cols-6 pt-6">
-                  <div className="col-span-1">
-                    <RadioGroupItem
-                      value="default"
-                      id="r1"
-                      checked={selectedAddress === item.id!}
-                    />
-                  </div>
-                  <div className="col-span-5">
-                    <p>{item.street}</p>
-                    <p>
-                      {item.city}, {item.state}, {item.country}
-                    </p>
-                    <p>{item.postalCode}</p>
-                  </div>
-                </CardContent>
-              </label>
-            </Card>
-          ))}
-        </RadioGroup>
+        {addresses.length <= 0 ? (
+          <div>
+            <h2 className="text-lg font-semibold">
+              You don't have any addresses yet.
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Click the button below to add a new address.
+            </p>
+            <Link href={"/user/setting"}>
+              <Button className="mt-4">Add New Address</Button>
+            </Link>
+          </div>
+        ) : (
+          <RadioGroup defaultValue="comfortable">
+            {addresses.map((item, index) => (
+              <Card key={index}>
+                <label
+                  onClick={() => {
+                    setAddress(item);
+                  }}
+                >
+                  <CardContent className="grid grid-cols-6 pt-6">
+                    <div className="col-span-1">
+                      <RadioGroupItem
+                        value="default"
+                        id="r1"
+                        checked={selectedAddress === item.id!}
+                      />
+                    </div>
+                    <div className="col-span-5">
+                      <p>{item.street}</p>
+                      <p>
+                        {item.city}, {item.state}, {item.country}
+                      </p>
+                      <p>{item.postalCode}</p>
+                    </div>
+                  </CardContent>
+                </label>
+              </Card>
+            ))}
+          </RadioGroup>
+        )}
       </div>
     </Modal>
   );

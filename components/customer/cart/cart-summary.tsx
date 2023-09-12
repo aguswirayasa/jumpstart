@@ -70,7 +70,7 @@ const CartSummary = () => {
       <Button
         className="w-full mt-5"
         onClick={handleCheckout}
-        disabled={isLoading}
+        disabled={isLoading || !totalPrice || !address}
       >
         Checkout
       </Button>

@@ -47,10 +47,12 @@ const ProfileNav = ({ name, avatar, email }: ProfileNavProps) => {
               <BiSolidBookmarkHeart />
               <p className="text-black ">Wishlist</p>
             </li>
-            <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
-              <BsCartCheckFill />
-              <p className="text-black ">Orders </p>
-            </li>
+            <Link href={"/user/orders-history"}>
+              <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
+                <BsCartCheckFill />
+                <p className="text-black ">Orders </p>
+              </li>
+            </Link>
             <Link href={"/user/setting"}>
               <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
                 <BsFillGearFill />

@@ -202,3 +202,26 @@ export async function getShippingAddress(uid: string) {
     await prismadb.$disconnect();
   }
 }
+
+export async function getUserOrderHistory(email: string) {
+  try {
+    const orderHistory = await prismadb.orders.findMany({
+      where: {
+        userEmail: email,
+      },
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return orderHistory;
+  } catch (error) {
+    console.error(error);
+    return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
