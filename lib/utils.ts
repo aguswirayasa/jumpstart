@@ -1,5 +1,6 @@
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
+import { format } from "date-fns";
 import { env } from "process";
 import { twMerge } from "tailwind-merge";
 
@@ -24,3 +25,33 @@ export const deleteImageFromCloudinary = async (publicId: string) => {
     console.error("Error deleting image:", error);
   }
 };
+
+export function formatOrder(orders: any[]) {
+  const formattedItems = orders!.map((item) => {
+    const products = item.orderItems
+      .map((orderItem: { product: { name: any }; productVariant: any }) => {
+        const productName = orderItem.product.name;
+        const variantName = orderItem.productVariant;
+
+        // Check if a variant name exists
+        if (!variantName?.includes("true") && variantName) {
+          return `${productName} (${variantName})`;
+        } else {
+          return productName;
+        }
+      })
+      .join("\n");
+
+    return {
+      id: item.id,
+      address: item.address,
+      customerName: item.user?.firstName + " " + item.user?.lastName,
+      phoneNumber: item.phone,
+      status: item.isPaid ? "Completed" : "Unpaid",
+      totalPrice: "$" + item.totalPrice,
+      products: products,
+      createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    };
+  });
+  return formattedItems;
+}

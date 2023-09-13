@@ -92,9 +92,10 @@ const AddCategoryForm = () => {
           <CldUploadWidget
             uploadPreset="jumpstart"
             onSuccess={(result: any) => {
-              const { public_id } = result.info;
-              setThumbnail(public_id);
-              addImage(public_id);
+              const { secure_url } = result.info;
+
+              setThumbnail(secure_url);
+              addImage(secure_url);
               form.clearErrors("thumbnail");
             }}
           >

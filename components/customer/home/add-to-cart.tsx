@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Variant } from "@/types";
 import { Product } from "use-shopping-cart/core";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 interface AddToCartProps {
   stock: number;
@@ -151,7 +152,9 @@ const AddToCart = ({
             {variantStock === 0 ? (
               <p className="font-bold">Sold Out</p>
             ) : (
-              <p className="font-bold">Buy Now</p>
+              <Link href={"/cart"}>
+                <p className="font-bold">Checkout</p>
+              </Link>
             )}
           </Button>
         </div>

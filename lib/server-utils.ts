@@ -80,6 +80,7 @@ export async function getCategories() {
     return categories;
   } catch (error) {
     console.log(error);
+    return [];
   } finally {
     await prismadb.$disconnect();
   }
@@ -221,6 +222,184 @@ export async function getUserOrderHistory(email: string) {
   } catch (error) {
     console.error(error);
     return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getSales() {
+  try {
+    const sales = await prismadb.sale.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+    return sales;
+  } catch (error) {
+    console.error(`Error fetching monthly sales: `, error);
+    return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getBestSellerItem() {
+  try {
+    const mostOrderedItems: any[] = await prismadb.$queryRaw`
+    SELECT 
+      O.productId,
+      O.productVariant,
+      SUM(O.quantity) as totalQuantity,
+      P.name
+    FROM OrderItem O
+    JOIN Product P ON O.productId = P.id
+    GROUP BY O.productId, O.productVariant, P.name
+    ORDER BY totalQuantity DESC
+    LIMIT 3;
+  `;
+    const formattedItems = mostOrderedItems.map((item) => ({
+      ...item,
+      totalQuantity: Number(item.totalQuantity),
+    }));
+    return formattedItems;
+  } catch (error) {
+    console.error(error);
+    return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getStatistics() {
+  try {
+    // Fetch total sales
+    const totalSales = await prismadb.sale.aggregate({
+      _sum: {
+        amount: true,
+      },
+    });
+
+    // Fetch total number of orders
+    const totalOrders = await prismadb.orders.count();
+
+    // Fetch total number of products
+    const totalProducts = await prismadb.product.count();
+
+    return {
+      totalSales: totalSales._sum.amount || 0,
+      totalOrders,
+      totalProducts,
+    };
+  } catch (error) {
+    throw error;
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getRecentOrders() {
+  try {
+    const recentOrders = await prismadb.orders.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return recentOrders;
+  } catch (error) {
+    console.log(error);
+    return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function incrementSaleAmount(totalPrice: number) {
+  try {
+    // Find the current sale record
+    const currentSale = await prismadb.sale.findFirst({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    // Increment the amount field by totalPrice
+    await prismadb.sale.update({
+      where: {
+        id: currentSale?.id,
+      },
+      data: {
+        amount: {
+          increment: totalPrice,
+        },
+      },
+    });
+
+    console.log("Sale amount updated successfully.");
+  } catch (error) {
+    console.error("Error updating sale amount:", error);
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function getProductByCategory(categoryName: string) {
+  try {
+    const products = await prismadb.product.findMany({
+      where: {
+        category: {
+          name: categoryName,
+        },
+      },
+      select: {
+        name: true,
+        id: true,
+        price: true,
+        thumbnail: true,
+      },
+    });
+    return products;
+  } catch (error) {
+    console.log(error);
+    return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function searchProduct(keyword: string) {
+  console.log(keyword);
+  try {
+    const products = await prismadb.product.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: keyword,
+            },
+          },
+          {
+            category: {
+              name: {
+                contains: keyword,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return products;
+  } catch (error) {
+    console.error("Error searching for products:", error);
+    throw error;
   } finally {
     await prismadb.$disconnect();
   }

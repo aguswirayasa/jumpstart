@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
-import { decrementStock } from "@/lib/server-utils";
+import { decrementStock, incrementSaleAmount } from "@/lib/server-utils";
 import { getSession } from "next-auth/react";
 import { Address } from "@/types";
 
@@ -74,6 +74,7 @@ export async function POST(req: Request) {
                 : "",
             },
           });
+          await incrementSaleAmount(Number((totalPrice / 100).toFixed(2)) || 0);
         }
 
         console.log("Order created:", newOrder);

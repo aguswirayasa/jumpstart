@@ -61,7 +61,7 @@ const page = async () => {
             <span className="bg-green-300 rounded-xl text-center px-3 py-1 md:px-10 text-green-700">
               Order Completed
             </span>
-            <div className="space-x-3 flex items-center">
+            <div className="space-x-3 flex items-center my-3 md:my-0">
               <Button>Review</Button>
               <h3 className="font-bold">Grand Total: ${order.totalPrice}</h3>
             </div>

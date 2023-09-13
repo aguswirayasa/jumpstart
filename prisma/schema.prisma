@@ -158,3 +158,10 @@ model ShippingAddress {
 
   @@index([userId])
 }
+
+model Sale {
+  id        String    @id @default(uuid())
+  amount    Float
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}

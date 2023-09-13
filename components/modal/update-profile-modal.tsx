@@ -223,8 +223,8 @@ export const UpdateProfileModal: React.FC<Profile> = ({
                 className="w-3/4 self-center mt-10"
               >
                 {updateProfileMutation.isLoading
-                  ? "Saving category..."
-                  : "Save Category"}
+                  ? "Saving Profile..."
+                  : "Save Profile"}
               </Button>
             </form>
           </Form>

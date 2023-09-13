@@ -1,139 +1,21 @@
 "use client";
 
 import CategoryCard from "@/components/ui/category-card";
+import Link from "next/link";
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 
-const category = [
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-  {
-    thumbnail:
-      "https://res.cloudinary.com/drqn4yupq/image/upload/v1693483847/jumpstart-product/71NBQ2a52CL-removebg-preview_tyfkpb.png",
-    name: "Gaming Console",
-    id: "31h9h90h9h90",
-  },
-];
+interface CategoriesProps {
+  categories: {
+    thumbnail: string;
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
+}
 
-const Categories = () => {
+const Categories = ({ categories }: CategoriesProps) => {
   const cardsPerSlide = 16;
 
   const chunkArray = (array: any[], chunkSize: number) => {
@@ -144,7 +26,7 @@ const Categories = () => {
     return result;
   };
 
-  const chunkedCategory = chunkArray(category, cardsPerSlide);
+  const chunkedCategory = chunkArray(categories, cardsPerSlide);
   return (
     <Carousel
       showThumbs={false}
@@ -155,7 +37,7 @@ const Categories = () => {
       renderIndicator={() => null}
     >
       {chunkedCategory.map((chunk, index) => (
-        <div className="grid grid-cols-8" key={index}>
+        <div className="grid grid-cols-12 md:grid-cols-8 " key={index}>
           {chunk.map(
             (
               category: {
@@ -169,11 +51,13 @@ const Categories = () => {
                 className="col-span-3 sm:col-span-2 lg:col-span-1"
                 key={categoryIndex}
               >
-                <CategoryCard
-                  name={category.name}
-                  thumbnail={category.thumbnail}
-                  id={category.id}
-                />
+                <Link href={`/category/${category.name}`}>
+                  <CategoryCard
+                    name={category.name}
+                    thumbnail={category.thumbnail}
+                    id={category.id}
+                  />
+                </Link>
               </div>
             )
           )}
