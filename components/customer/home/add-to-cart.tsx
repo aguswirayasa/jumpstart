@@ -11,6 +11,7 @@ import { Variant } from "@/types";
 import { Product } from "use-shopping-cart/core";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface AddToCartProps {
   stock: number;
@@ -35,6 +36,8 @@ const AddToCart = ({
   const [selected, setSelected] = useState(
     variantOptions[0]?.name + "" + 0 || ""
   );
+  const { data: session, status } = useSession();
+  const checkout = session?.user ? "/cart" : "/sign-in";
 
   const [variantStock, setVariantStock] = useState(stock);
   const { addItem, cartDetails } = useShoppingCart();
@@ -152,7 +155,7 @@ const AddToCart = ({
             {variantStock === 0 ? (
               <p className="font-bold">Sold Out</p>
             ) : (
-              <Link href={"/cart"}>
+              <Link href={checkout}>
                 <p className="font-bold">Checkout</p>
               </Link>
             )}

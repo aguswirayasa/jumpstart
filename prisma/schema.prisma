@@ -26,6 +26,7 @@ model Users{
   reviews  Review[]
   orders   Orders[]
   shippingAddresses ShippingAddress[]
+  wishlists Wishlist[]
 }
 
 model ActivateToken{
@@ -66,6 +67,7 @@ model Product {
   updatedAt      DateTime @updatedAt
   variantOption  VariantOption[]
   orderItem OrderItem[]
+  wishlists Wishlist[]
 
   @@index([categoryId])
 }
@@ -164,4 +166,20 @@ model Sale {
   amount    Float
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+model Wishlist {
+ id          String       @id @default(uuid())
+  userId      String
+  productId   String
+  createdAt   DateTime     @default(now())
+
+  // Define foreign keys and relationships
+  user        Users         @relation(fields: [userId], references: [id])
+  product     Product      @relation(fields: [productId], references: [id])
+
+  @@index([userId])
+  @@index([productId])
+
+  // Add a unique constraint to ensure each user can wishlist a product only once
+  @@unique([userId, productId])
 }

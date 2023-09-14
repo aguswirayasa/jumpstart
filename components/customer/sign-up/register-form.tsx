@@ -152,7 +152,12 @@ const RegistrationForm = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Password" {...field} className="" />
+                      <Input
+                        placeholder="Password"
+                        {...field}
+                        className=""
+                        type="password"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
