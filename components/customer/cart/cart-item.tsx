@@ -40,15 +40,19 @@ const CartItem = () => {
                 className="shadow-none relative border-none rounded-none grid md:flex justify-start items-start"
               >
                 <CardHeader className=" p-5 relative">
-                  <div className=" mx-auto  md:max-w-[300px] ">
-                    <Image
-                      src={itemDetails.image!}
-                      alt={itemDetails.name}
-                      width={300}
-                      height={300}
-                      className=" max-h-[100px]  md:max-w-[200px] object-contain rounded-lg"
-                    />
-                  </div>
+                  <Link
+                    href={`/product/${itemDetails.name}/${itemDetails.sku}`}
+                  >
+                    <div className=" mx-auto  md:max-w-[300px] ">
+                      <Image
+                        src={itemDetails.image!}
+                        alt={itemDetails.name}
+                        width={300}
+                        height={300}
+                        className=" max-h-[100px]  md:max-w-[200px] object-contain rounded-lg"
+                      />
+                    </div>
+                  </Link>
                 </CardHeader>
                 <CardContent className="p-5 max-w-md">
                   <h3 className="font-bold">{itemDetails.name}</h3>

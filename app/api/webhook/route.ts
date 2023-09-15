@@ -1,3 +1,6 @@
+export const runtime = "edge"; // 'nodejs' is the default
+export const preferredRegion = "sin1";
+
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -5,7 +8,6 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
 import { decrementStock, incrementSaleAmount } from "@/lib/server-utils";
-import { getSession } from "next-auth/react";
 import { Address } from "@/types";
 
 export async function POST(req: Request) {

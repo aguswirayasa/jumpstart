@@ -77,3 +77,16 @@ export type Address = {
   country: string;
   postalCode: string;
 };
+export type wishlistRequest = {
+  productId: string;
+  userEmail: string;
+};
+
+export type ReviewRequest = {
+  rating: number;
+  comment: string;
+  orderItemsId: string;
+  productId: string;
+  userEmail: string;
+  productVariant: string;
+};

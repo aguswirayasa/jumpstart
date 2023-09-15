@@ -21,7 +21,7 @@ const CategoryPage = async ({
         <Card className="col-span-3">
           <FilterBar categories={categories} />
         </Card>
-        <Card className="col-span-9 grid grid-cols-4">
+        <div className="col-span-9 grid grid-cols-4 space-x-5">
           {products.length === 0 ? (
             <div className="col-span-4 flex justify-center items-center">
               <div className="max-w-lg flex flex-col items-center space-x-3">
@@ -51,7 +51,7 @@ const CategoryPage = async ({
               </>
             ))
           )}
-        </Card>
+        </div>
       </div>
     </div>
   );

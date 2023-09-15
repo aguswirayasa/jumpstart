@@ -66,8 +66,8 @@ model Product {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   variantOption  VariantOption[]
-  orderItem OrderItem[]
-  wishlists Wishlist[]
+  orderItem      OrderItem[]
+  wishlists      Wishlist[]
 
   @@index([categoryId])
 }
@@ -83,16 +83,18 @@ model Specification {
 }
 
 model Review {
-   id           String    @id @default(uuid())
-  content       String
-  rating        Decimal
-  productId     String
-  product       Product   @relation(fields: [productId], references: [id])
-  userId        String
-  user          Users     @relation(fields: [userId], references: [id])
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  @@index([userId])
+   id            String    @id @default(uuid())
+  content        String
+  rating         Decimal
+  productId      String
+  productVariant String?
+  product        Product   @relation(fields: [productId], references: [id])
+  userEmail      String
+  user           Users     @relation(fields: [userEmail], references: [email])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([userEmail])
   @@index([productId])
 }
 
@@ -117,18 +119,17 @@ model VariantOption {
 }
 
 model Orders {
-  id        String    @id @default(uuid())
-  orderItems OrderItem[] // Relation to OrderItem model
-  isPaid     Boolean   @default(false)
-  phone      String    @default("")
-  address    String    @default("")
-  totalPrice Float       @default(0)
-  createdAt  DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  userEmail  String?   // Change the field name to "userEmail"
-  user       Users?     @relation(fields: [userEmail], references: [email]) // Update the relation to use "userEmail"
+  id          String      @id @default(uuid())
+  orderItems  OrderItem[] 
+  isPaid      Boolean     @default(false)
+  phone       String      @default("")
+  address     String      @default("")
+  totalPrice  Float       @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userEmail   String?   
+  user        Users?      @relation(fields: [userEmail], references: [email]) // Update the relation to use "userEmail"
  
-
   @@index([userEmail])
 }
 
@@ -136,14 +137,13 @@ model Orders {
 model OrderItem {
   id              String  @id @default(uuid())
   quantity        Int @default(0)
-  // Define a many-to-one relationship to the product
   productId       String
   productVariant  String?
+  isReviewed      Boolean @default(false)
   product         Product @relation(fields: [productId], references: [id])
-  
-  // Define a many-to-one relationship to the order
   orderId         String
   order           Orders   @relation(fields: [orderId], references: [id])
+ 
   @@index([orderId])
   @@index([productId])
 }
@@ -168,18 +168,14 @@ model Sale {
   updatedAt DateTime  @updatedAt
 }
 model Wishlist {
- id          String       @id @default(uuid())
-  userId      String
+  id          String    @id @default(uuid())
+  userEmail   String
   productId   String
-  createdAt   DateTime     @default(now())
+  createdAt   DateTime  @default(now())
+  user        Users     @relation(fields: [userEmail], references: [email])
+  product     Product   @relation(fields: [productId], references: [id])
 
-  // Define foreign keys and relationships
-  user        Users         @relation(fields: [userId], references: [id])
-  product     Product      @relation(fields: [productId], references: [id])
-
-  @@index([userId])
+  @@index([userEmail])
   @@index([productId])
-
-  // Add a unique constraint to ensure each user can wishlist a product only once
-  @@unique([userId, productId])
+  @@unique([userEmail, productId])
 }

@@ -1,17 +1,20 @@
 "use client";
 
-import { useShoppingCart, DebugCart } from "use-shopping-cart";
-import React, { useState } from "react";
-import { FaCartPlus } from "react-icons/fa";
-import { BsFillBookmarkPlusFill } from "react-icons/bs";
+import { useShoppingCart } from "use-shopping-cart";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Variant } from "@/types";
+import { Variant, wishlistRequest } from "@/types";
 import { Product } from "use-shopping-cart/core";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import AddToCartButton from "@/components/ui/add-to-cart-button";
+import WishlistButton from "@/components/ui/wishlist-button";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { useWishlistStore } from "@/lib/store";
 
 interface AddToCartProps {
   stock: number;
@@ -20,6 +23,8 @@ interface AddToCartProps {
   name: string;
   id: string;
   variantOptions: Variant[];
+  wished: boolean;
+  userEmail: string;
 }
 
 const AddToCart = ({
@@ -29,6 +34,8 @@ const AddToCart = ({
   name,
   id,
   variantOptions,
+  wished,
+  userEmail,
 }: AddToCartProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [subtotal, setSubtotal] = useState<number>(price);
@@ -36,9 +43,11 @@ const AddToCart = ({
   const [selected, setSelected] = useState(
     variantOptions[0]?.name + "" + 0 || ""
   );
-  const { data: session, status } = useSession();
-  const checkout = session?.user ? "/cart" : "/sign-in";
 
+  const checkout = userEmail ? "/cart" : "/sign-in";
+  const isLogin = userEmail ? true : false;
+  const queryClient = useQueryClient();
+  const [isWished, setIsWished] = useState(wished);
   const [variantStock, setVariantStock] = useState(stock);
   const { addItem, cartDetails } = useShoppingCart();
   const product: Product = {
@@ -48,6 +57,38 @@ const AddToCart = ({
     image: thumbnail,
     price: price * 100,
     sku: id,
+  };
+  const wishlistData = {
+    userEmail: userEmail || "",
+    productId: id,
+  };
+
+  const wishlistMutation = useMutation(
+    async (data: wishlistRequest) => {
+      const response = await axios.post("/api/wishlist/add-wishlist", data);
+      if (response.data.message === "added") {
+        toast.success("Item added to wishlist!");
+        setIsWished(true);
+      } else {
+        toast.error("Item removed from wishlist!");
+        setIsWished(false);
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("wishlist");
+      },
+      onError: (error) => {
+        toast.error("Something went wrong, please try again");
+      },
+    }
+  );
+  const addToCart = () => {
+    addItem(product, { count: quantity });
+    toast.success("Item added to cart!");
+  };
+  const handleWishlist = (data: wishlistRequest) => {
+    wishlistMutation.mutateAsync(data);
   };
 
   return (
@@ -126,31 +167,29 @@ const AddToCart = ({
         </div>
         <p className="text-xl font-semibold my-3">Subtotal : ${subtotal}</p>
         <div className="space-y-3">
-          <div className="space-x-3">
-            <Button
-              className="space-x-3 select-none"
-              disabled={variantStock === 0}
-              onClick={() => {
-                addItem(product, { count: quantity });
-                toast.success("Item added to cart!");
-              }}
-            >
-              <FaCartPlus />
-              <p className="font-semibold">Add to cart</p>
-            </Button>
+          <div className="grid grid-cols-2 space-x-3">
+            <AddToCartButton
+              onClick={addToCart}
+              showText={true}
+              disable={variantStock === 0 || !isLogin}
+              classname="col-span-1"
+            />
 
-            <Button
-              className="space-x-3 select-none"
-              disabled={variantStock === 0}
-            >
-              <BsFillBookmarkPlusFill />
-              <p className="font-semibold">Add to wishlist</p>
-            </Button>
+            <WishlistButton
+              showText={true}
+              disable={
+                variantStock === 0 || wishlistMutation.isLoading || !isLogin
+              }
+              onClick={() => handleWishlist(wishlistData)}
+              isLoading={wishlistMutation.isLoading}
+              isWished={isWished}
+              classname="col-span-1"
+            />
           </div>
 
           <Button
             className="space-x-3 bg-yellow-500 w-full select-none"
-            disabled={variantStock === 0}
+            disabled={variantStock === 0 || !isLogin}
           >
             {variantStock === 0 ? (
               <p className="font-bold">Sold Out</p>

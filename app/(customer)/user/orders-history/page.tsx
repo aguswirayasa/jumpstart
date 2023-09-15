@@ -1,3 +1,4 @@
+import ReviewModal from "@/components/modal/review-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +41,11 @@ const page = async () => {
               </CardHeader>
               <CardContent className="p-5 flex justify-between w-full">
                 <div>
-                  <h3 className="font-bold">{orderItem.product.name}</h3>
+                  <Link
+                    href={`/product/${orderItem.product.name}/${orderItem.productId}`}
+                  >
+                    <h3 className="font-bold">{orderItem.product.name}</h3>
+                  </Link>
                   <p className="font-medium">${orderItem.product.price}</p>
                   {!orderItem.productVariant?.includes("true") &&
                     orderItem.productVariant && (
@@ -51,6 +56,16 @@ const page = async () => {
                   <h3 className="font-bold">
                     ${orderItem.product.price} x {orderItem.quantity}
                   </h3>
+
+                  <ReviewModal
+                    orderItemsId={orderItem.id}
+                    productImage={orderItem.product.thumbnail}
+                    productName={orderItem.product.name}
+                    productVariant={orderItem.productVariant || ""}
+                    productId={orderItem.productId}
+                    userEmail={email}
+                    isReviewed={orderItem.isReviewed}
+                  />
                 </div>
               </CardContent>
             </div>
@@ -62,7 +77,6 @@ const page = async () => {
               Order Completed
             </span>
             <div className="space-x-3 flex items-center my-3 md:my-0">
-              <Button>Review</Button>
               <h3 className="font-bold">Grand Total: ${order.totalPrice}</h3>
             </div>
           </CardFooter>

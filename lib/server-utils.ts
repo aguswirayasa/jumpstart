@@ -404,3 +404,39 @@ export async function searchProduct(keyword: string) {
     await prismadb.$disconnect();
   }
 }
+
+export async function getWishlist(email: string) {
+  try {
+    const wishlist = await prismadb.wishlist.findMany({
+      where: {
+        userEmail: email,
+      },
+      include: {
+        product: true,
+      },
+    });
+    return wishlist;
+  } catch (error) {
+    console.error(error);
+    return [];
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+
+export async function isInWishlist(productId: string, email: string) {
+  try {
+    const wishlist = await prismadb.wishlist.findFirst({
+      where: {
+        userEmail: email,
+        productId: productId,
+      },
+    });
+    return !!wishlist;
+  } catch (error) {
+    console.error(error);
+    return false;
+  } finally {
+    await prismadb.$disconnect();
+  }
+}

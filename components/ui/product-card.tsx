@@ -15,13 +15,14 @@ import { Rating } from "react-simple-star-rating";
 
 const ProductCard = (props: ProductCardProps) => {
   return (
-    <Card className=" max-h-none max-w-none text-left">
+    <Card className=" w-full h-full shadow-lg text-left">
       <CardHeader className="mx-auto ">
         <Image
           src={props?.thumbnail || "images/"}
           width={200}
           height={150}
           alt=""
+          loading="lazy"
           className=" object-contain h-[110px]"
         />
       </CardHeader>

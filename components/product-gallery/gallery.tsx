@@ -15,7 +15,7 @@ interface ProductGalleryProps {
 const ProductGallery = ({ images, thumbnail }: ProductGalleryProps) => {
   return (
     <Tab.Group as="div" className="flex justify-center   ">
-      <div className="  hidden w-[200px]  md:block lg:max-w-none">
+      <div className="   w-[200px]  md:block lg:max-w-none">
         <Tab.List className="flex flex-col gap-3 justify-center py-10">
           {images.map((image) => (
             <GalleryTab key={image.id} image={image} />
