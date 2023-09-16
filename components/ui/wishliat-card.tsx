@@ -80,7 +80,7 @@ const WishlistCard = (props: WishlistCardProps) => {
       <CardFooter className="grid ">
         <span className="flex items-center ">
           <Rating
-            initialValue={0}
+            initialValue={5}
             size={20}
             disableFillHover={true}
             allowHover={false}
