@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,23 +21,52 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UserData } from "@/types";
+import { useUserDataStore } from "@/lib/store";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey?: string;
-  searchPlaceholder?: string;
-  searchBar: boolean;
+  searchKey: string;
+  searchPlaceholder: string;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableEmails<TData, TValue>({
   columns,
   data,
   searchKey,
   searchPlaceholder,
-  searchBar = true,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [selectedUsers, setSelectedUsers] = useState<UserData[]>([]);
+  const setUserData = useUserDataStore((state) => state.setUserData);
+
+  // Assuming that TData can be either UserData or another type
+  useEffect(() => {
+    console.log(rowSelection);
+
+    // Map the selected rows and extract emails
+    const selectedEmails = table
+      .getFilteredSelectedRowModel()
+      .rows.map(
+        (row): UserData | { email: string; id: string; name: string } => {
+          const email = row?.original;
+          if (email && typeof email === "object") {
+            return email as unknown as UserData; // Cast email to UserData
+          }
+          return {
+            email: "",
+            id: "",
+            name: "",
+          };
+        }
+      );
+
+    // Update the selectedUsers state with the selected emails
+    setUserData(selectedEmails);
+  }, [rowSelection, setRowSelection]);
+
   const table = useReactTable({
     data,
     columns,
@@ -45,27 +74,25 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
     state: {
       columnFilters,
+      rowSelection,
     },
   });
 
   return (
     <div>
-      {searchBar && (
-        <div className="flex items-center py-4">
-          <Input
-            placeholder={searchPlaceholder || "Search"}
-            value={
-              (table.getColumn(searchKey!)?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn(searchKey!)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        </div>
-      )}
+      <div className="flex items-center py-4">
+        <Input
+          placeholder={searchPlaceholder || "Search"}
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(searchKey)?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader className="bg-primary ">
@@ -117,22 +144,33 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <div className="grid">
+          {selectedUsers.map((user, index) => (
+            <p key={index}>{user.email}</p>
+          ))}
+        </div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

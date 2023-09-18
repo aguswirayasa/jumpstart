@@ -96,3 +96,8 @@ export type ReviewRequest = {
   userEmail: string;
   productVariant: string;
 };
+export type UserData = {
+  id: string;
+  name: string;
+  email: string;
+};

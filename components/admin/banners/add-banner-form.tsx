@@ -19,51 +19,50 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import axios from "axios";
 import { deleteImageFromCloudinary } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
-const categorySchema = z.object({
-  name: z.string().min(2, "Please enter category name"),
-  thumbnail: z.string().min(2, "Please enter category thumbnail"),
+type Banner = {
+  banner: string;
+};
+
+const bannerSchema = z.object({
+  banner: z.string().min(2, "Please select banner"),
 });
-const AddCategoryForm = () => {
+const AddBannerForm = () => {
   const queryClient = useQueryClient();
   const [thumbnail, setThumbnail] = useState<string>("");
-  const form: UseFormReturn<Category> = useForm({
-    resolver: zodResolver(categorySchema),
+  const form: UseFormReturn<Banner> = useForm({
+    resolver: zodResolver(bannerSchema),
     defaultValues: {
-      name: "",
-      thumbnail: "",
+      banner: "",
     },
   });
-  const addCategoryMutation = useMutation(
-    async (categoryData: Category) => {
-      const response = await axios.post(
-        "/api/admin/category/add-category",
-        categoryData
-      );
+  const addBannerMutation = useMutation(
+    async (banner: Banner) => {
+      const response = await axios.post("/api/admin/banner/add-banner", banner);
       if (response.status === 200) {
-        toast.success("Category added successfully");
+        toast.success("Banner added successfully");
       } else {
         toast.error("Something went wrong, please try again");
       }
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("category");
+        queryClient.invalidateQueries("banner");
         setThumbnail("");
         form.reset();
       },
     }
   );
 
-  const onSubmit = async (data: Category) => {
-    addCategoryMutation.mutate(data);
+  const onSubmit = async (data: Banner) => {
+    addBannerMutation.mutate(data);
   };
-  const addImage = (thumbnail: string) => {
-    form.setValue("thumbnail", thumbnail);
+  const addImage = (banner: string) => {
+    form.setValue("banner", banner);
   };
 
   return (
@@ -72,23 +71,6 @@ const AddCategoryForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col justify-start w-96"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Category Name"
-                  {...field}
-                  className="col-span-1"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="">
           <CldUploadWidget
             uploadPreset="jumpstart"
@@ -97,7 +79,7 @@ const AddCategoryForm = () => {
 
               setThumbnail(secure_url);
               addImage(secure_url);
-              form.clearErrors("thumbnail");
+              form.clearErrors("banner");
             }}
           >
             {({ open }) => {
@@ -109,7 +91,7 @@ const AddCategoryForm = () => {
                 <>
                   {!thumbnail && (
                     <Button className="button my-3" onClick={handleOnClick}>
-                      Upload a Thumbnail
+                      Upload a Banner
                     </Button>
                   )}
                 </>
@@ -117,18 +99,18 @@ const AddCategoryForm = () => {
             }}
           </CldUploadWidget>
 
-          <p className="text-sm font-medium ">Thumbnail :</p>
+          <p className="text-sm font-medium ">Banner :</p>
           <p className="text-sm font-medium text-destructive">
-            {form.formState.errors.thumbnail?.message}
+            {form.formState.errors.banner?.message}
           </p>
           {thumbnail && (
             <div className="flex flex-wrap gap-3 my-3">
               <div className="relative">
                 <CldImage
-                  width="300"
+                  width="600"
                   height="300"
                   src={thumbnail}
-                  className="rounded-lg object-center aspect-video h-[300px]  select-none"
+                  className="rounded-lg object-center object-contain max-h-[300px]  select-none"
                   alt="Description of my image"
                 />
                 <span
@@ -136,7 +118,7 @@ const AddCategoryForm = () => {
                   onClick={() => {
                     deleteImageFromCloudinary(thumbnail);
 
-                    form.setValue("thumbnail", "");
+                    form.setValue("banner", "");
                     setThumbnail("");
                   }}
                 >
@@ -148,16 +130,16 @@ const AddCategoryForm = () => {
         </div>
         <Button
           type="submit"
-          disabled={addCategoryMutation.isLoading}
+          disabled={addBannerMutation.isLoading}
           className="w-3/4 self-center mt-10"
         >
-          {addCategoryMutation.isLoading ? (
+          {addBannerMutation.isLoading ? (
             <>
               <Loader2 className="animate-spin" />
-              <p>Saving category...</p>
+              <p>Saving banner...</p>
             </>
           ) : (
-            "Save Category"
+            "Save Banner"
           )}
         </Button>
       </form>
@@ -165,4 +147,4 @@ const AddCategoryForm = () => {
   );
 };
 
-export default AddCategoryForm;
+export default AddBannerForm;

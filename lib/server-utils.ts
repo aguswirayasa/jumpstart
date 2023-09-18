@@ -109,7 +109,11 @@ export async function getOrders() {
 export async function getCustomer() {
   "use server";
   try {
-    const customers = await prismadb.users.findMany();
+    const customers = await prismadb.users.findMany({
+      where: {
+        role: "CUSTOMER",
+      },
+    });
     return customers;
   } catch (error) {
     console.log(error);
@@ -610,5 +614,32 @@ export async function getAllProducts() {
     return [];
   } finally {
     prismadb.$disconnect;
+  }
+}
+
+export async function getAllBanners() {
+  try {
+    const result = await prismadb.banner.findMany();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return []; //
+  } finally {
+    await prismadb.$disconnect();
+  }
+}
+export async function getAllActiveBanners() {
+  try {
+    const result = await prismadb.banner.findMany({
+      where: {
+        active: true,
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+    return []; //
+  } finally {
+    await prismadb.$disconnect();
   }
 }

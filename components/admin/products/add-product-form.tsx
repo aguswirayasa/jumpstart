@@ -37,6 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "../../ui/badge";
 import { deleteImageFromCloudinary } from "@/lib/utils";
 import { toast } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 const productSchema = z.object({
   name: z.string().min(2, "Please enter product name"),
@@ -520,9 +521,14 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             disabled={addProductMutation.isLoading}
             className="w-3/4 self-center mt-10"
           >
-            {addProductMutation.isLoading
-              ? "Saving product..."
-              : "Save Product"}
+            {addProductMutation.isLoading ? (
+              <>
+                <Loader2 className="animate-spin" />
+                <p>Saving product...</p>
+              </>
+            ) : (
+              "Save Product"
+            )}
           </Button>
         </div>
       </form>

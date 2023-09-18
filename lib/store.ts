@@ -1,10 +1,14 @@
-import { Address, Category } from "@/types";
+import { Address, Category, UserData } from "@/types";
 import { create } from "zustand";
 
 type Wishlist = {
   productId: string;
 };
 
+interface UserDataState {
+  userData: UserData[];
+  setUserData: (userData: UserData[]) => void;
+}
 interface CartState {
   address: Address;
   setAddress: (address: Address) => void;
@@ -56,4 +60,8 @@ export const useProfileStore = create<ProfileState>((set) => ({
   name: "",
   setName: (name) => set({ name }),
   setAvatarUrl: (avatarUrl) => set({ avatarUrl }),
+}));
+export const useUserDataStore = create<UserDataState>((set) => ({
+  userData: [],
+  setUserData: (userData) => set({ userData }),
 }));
