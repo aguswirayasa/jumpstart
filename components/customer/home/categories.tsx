@@ -51,7 +51,7 @@ const Categories = ({ categories }: CategoriesProps) => {
                 className="col-span-3 sm:col-span-2 lg:col-span-1"
                 key={categoryIndex}
               >
-                <Link href={`/category/${category.name}`}>
+                <Link href={`/search?keyword=${category.name}`}>
                   <CategoryCard
                     name={category.name}
                     thumbnail={category.thumbnail}

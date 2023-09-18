@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Profile } from "@/types";
 import { useRouter } from "next/navigation";
+import { useProfileStore } from "@/lib/store";
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "Please enter First Name"),
@@ -59,7 +60,7 @@ export const UpdateProfileModal: React.FC<Profile> = ({
   const [open, setOpen] = useState(false);
   const isMounted = useHydration();
   const router = useRouter();
-
+  const setName = useProfileStore((state) => state.setName);
   const form: UseFormReturn<Profile> = useForm({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -78,6 +79,7 @@ export const UpdateProfileModal: React.FC<Profile> = ({
       });
       if (response.status === 200) {
         toast.success("Profile updated successfully");
+        setName(profile.firstName + " " + profile.lastName);
       } else {
         toast.error("Something went wrong, please try again");
       }
@@ -86,7 +88,7 @@ export const UpdateProfileModal: React.FC<Profile> = ({
       onSuccess: () => {
         queryClient.invalidateQueries("update");
         setOpen(false);
-        form.reset();
+
         router.refresh();
       },
     }
@@ -112,7 +114,6 @@ export const UpdateProfileModal: React.FC<Profile> = ({
         isOpen={open}
         onClose={() => {
           setOpen(false);
-          form.reset();
         }}
       >
         <div className=" space-x-2 flex flex-col justify-center w-full">
@@ -204,7 +205,9 @@ export const UpdateProfileModal: React.FC<Profile> = ({
                       <FormLabel>Gender</FormLabel>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select Gender" />
+                          <SelectValue
+                            placeholder={gender || "Select Gender"}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

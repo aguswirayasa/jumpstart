@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   title: string;
@@ -16,6 +17,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  className?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -24,6 +26,7 @@ export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
+  className,
 }) => {
   const onChange = (open: boolean) => {
     if (!open) {
@@ -38,7 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div>{children}</div>
+        <div className={cn(className)}>{children}</div>
       </DialogContent>
     </Dialog>
   );

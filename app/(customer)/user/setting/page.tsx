@@ -30,6 +30,7 @@ const page = async () => {
   const res = await getProfile(email!);
   const shippingAddress: Address[] = await getShippingAddress(res?.id!);
   const profile: Profile = {
+    avatar: res?.avatarUrl!,
     birthDay: res?.birthday!,
     firstName: res?.firstName!,
     gender: res?.gender!,
@@ -69,9 +70,9 @@ const page = async () => {
         <Card className="col-span-12 md:col-span-9 grid grid-cols-12 p-3 gap-3">
           <div className="col-span-12 md:col-span-4 flex flex-col justify-start items-center gap-3 p-3">
             <div className="relative w-[300px] h-[300px] bg-gray-400 ">
-              <AddImageModal />
+              <AddImageModal uid={profile.uid || ""} />
               <Image
-                src={"/default-avatar.jpg"}
+                src={profile.avatar || "/default-avatar.jpg"}
                 fill
                 className="object-cover object-center "
                 alt="avatar"

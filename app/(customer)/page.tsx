@@ -3,31 +3,21 @@ import SpecialOfferCarousel from "@/components/customer/home/special-offer-carou
 import { Separator } from "@/components/ui/separator";
 import Categories from "@/components/customer/home/categories";
 import prismadb from "@/lib/prismadb";
-import { getCategories } from "@/lib/server-utils";
+import { getAllProducts, getCategories } from "@/lib/server-utils";
 
 export default async function Home() {
-  async function getAllProducts() {
-    "use server";
-    try {
-      const products = await prismadb.product.findMany({
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          thumbnail: true,
-        },
-      });
-
-      return products;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      return [];
-    } finally {
-      prismadb.$disconnect;
-    }
-  }
   const products = await getAllProducts();
   const categories = await getCategories();
+
+  // Map and reshape the products array to match ProductCardProps
+  const reshapedProducts = products.map((product) => ({
+    id: product.product.id,
+    thumbnail: product.product.thumbnail,
+    name: product.product.name,
+    price: product.product.price,
+    averageRating: Number(product.product.averageRating),
+    totalReviews: product.product.totalReviews,
+  }));
 
   const images = [
     "https://images.tokopedia.net/img/cache/1208/NsjrJu/2023/8/24/d436f91b-8fc1-451d-91d3-6d375402fc00.jpg.webp?ect=4g",
@@ -40,12 +30,12 @@ export default async function Home() {
       <AutoPlayCarousel images={images} />
       <div className="flex flex-col justify-center items-center mt-10 gap-3 ">
         <h2 className="text-2xl font-bold self-start ">New Arrival</h2>
-        <SpecialOfferCarousel products={products} />
+        <SpecialOfferCarousel products={reshapedProducts} />
       </div>
       <Separator className="my-8" />
       <div className="flex flex-col justify-center items-center  gap-3 ">
         <h2 className="text-2xl font-bold self-start ">Special Offers</h2>
-        <SpecialOfferCarousel products={products} />
+        <SpecialOfferCarousel products={reshapedProducts} />
       </div>
       <Separator className="my-8" />
       <div className="flex flex-col justify-center items-center  gap-3 ">

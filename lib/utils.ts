@@ -1,3 +1,4 @@
+import { Product, ProductCardProps } from "@/types";
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
@@ -55,3 +56,43 @@ export function formatOrder(orders: any[]) {
   });
   return formattedItems;
 }
+export const sortProducts = (
+  products: ProductCardProps[],
+  selectedSortOption: string
+) => {
+  const sortedProducts = [...products]; // Create a copy of the products array
+  console.log("START", sortedProducts);
+  console.log(selectedSortOption);
+  switch (selectedSortOption) {
+    case "Highest":
+      sortedProducts.sort((a, b) => Number(b.price) - Number(a.price));
+      break;
+    case "Lowest":
+      sortedProducts.sort((a, b) => Number(a.price) - Number(b.price));
+      break;
+    case "Newest":
+      sortedProducts.sort(
+        (a, b) =>
+          new Date(b?.createdAt || 0).getTime() -
+          new Date(a?.createdAt || 0).getTime()
+      );
+
+      break;
+
+    case "Oldest":
+      sortedProducts.sort(
+        (a, b) =>
+          new Date(a?.createdAt || 0).getTime() -
+          new Date(b?.createdAt || 0).getTime()
+      );
+      break;
+
+    default:
+      // Default sorting option (e.g., no sorting)
+      break;
+  }
+  console.log("END", sortedProducts);
+  // Now, you have the sortedProducts array based on the selectedSortOption
+  // You can use this sortedProducts array to render your products
+  return sortedProducts;
+};

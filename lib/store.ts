@@ -9,6 +9,13 @@ interface CartState {
   address: Address;
   setAddress: (address: Address) => void;
 }
+interface ProfileState {
+  avatarUrl: string;
+  name: string;
+  setName: (Name: string) => void;
+  setAvatarUrl: (avatarUrl: string) => void;
+}
+
 interface CategoriesState {
   categories: Category[];
   setCategories: (categories: Category[]) => void;
@@ -43,4 +50,10 @@ export const useCategoryStore = create<CategoriesState>((set) => ({
 export const useWishlistStore = create<WishlistState>((set) => ({
   wishlist: [],
   setWishlist: (wishlist) => set((state) => ({ ...state, wishlist })),
+}));
+export const useProfileStore = create<ProfileState>((set) => ({
+  avatarUrl: "",
+  name: "",
+  setName: (name) => set({ name }),
+  setAvatarUrl: (avatarUrl) => set({ avatarUrl }),
 }));

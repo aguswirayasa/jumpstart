@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { signIn, useSession } from "next-auth/react";
@@ -15,6 +15,7 @@ import ProfileNav from "./profile-nav";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CustomIcon from "@/components/ui/icons";
+import { useProfileStore } from "@/lib/store";
 
 interface NavbarProps {
   categories: { name: string }[];
@@ -26,6 +27,13 @@ const Navbar = ({ categories }: NavbarProps) => {
   const session = useSession();
   const user = session.data?.user;
   const router = useRouter();
+  const setAvatar = useProfileStore((state) => state.setAvatarUrl);
+  const setName = useProfileStore((state) => state.setName);
+  const { avatarUrl, name } = useProfileStore();
+  useEffect(() => {
+    setAvatar(user?.image || "");
+    setName(user?.name || "");
+  }, []);
   const handleSearch = (search: string) => {
     router.push(`/search?keyword=${search}`);
   };
@@ -71,8 +79,8 @@ const Navbar = ({ categories }: NavbarProps) => {
                 </Link>
                 <div className="flex gap-3 items-center">
                   <ProfileNav
-                    avatar={user?.image || ""}
-                    name={user?.name || ""}
+                    avatar={avatarUrl}
+                    name={name}
                     email={user?.email || ""}
                   />
                 </div>
@@ -99,7 +107,7 @@ const Navbar = ({ categories }: NavbarProps) => {
           <div className="flex justify-center pb-3">
             <div className="flex items-center gap-3">
               {categories.slice(0, 5).map((category, index) => (
-                <Link href={`/category/${category.name}`} key={index}>
+                <Link href={`/search?keyword=${category.name}`} key={index}>
                   <p className="text-gray-500 hover:text-primary font-medium text-xs md:text-base">
                     {category.name}
                   </p>

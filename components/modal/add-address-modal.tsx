@@ -84,7 +84,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({
       onSuccess: () => {
         queryClient.invalidateQueries("address");
         setOpen(false);
-        form.reset();
+
         router.refresh();
       },
     }
@@ -112,7 +112,6 @@ export const AddressModal: React.FC<AddressModalProps> = ({
         isOpen={open}
         onClose={() => {
           setOpen(false);
-          form.reset();
         }}
       >
         <div className=" space-x-2 flex flex-col justify-center w-full">

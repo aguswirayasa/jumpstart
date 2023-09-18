@@ -363,9 +363,47 @@ export async function getProductByCategory(categoryName: string) {
         id: true,
         price: true,
         thumbnail: true,
+        createdAt: true,
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
       },
     });
-    return products;
+    const productstWithConvertedRatings = products.map((item) => {
+      let totalRating = 0;
+      let totalReviews = 0;
+
+      // Calculate totalRating and totalReviews for this product
+      item.reviews.forEach((review) => {
+        totalRating += review.rating.toNumber(); // Assuming toNumber() converts it to a number
+        totalReviews++;
+      });
+
+      // Calculate the average rating for this product
+      const averageRating =
+        totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "0.0";
+
+      // Create a new object without the 'reviews' property
+      const productWithoutReviews = {
+        ...item,
+        reviews: undefined,
+      };
+
+      // Create a new product object with the calculated averageRating
+      const productWithConvertedRatings = {
+        ...productWithoutReviews,
+        averageRating: averageRating, // Add the averageRating property
+        totalReviews: totalReviews, // Add the totalReviews property
+      };
+
+      return {
+        product: productWithConvertedRatings, // Replace the product with the one containing averageRating
+      };
+    });
+
+    return productstWithConvertedRatings;
   } catch (error) {
     console.log(error);
     return [];
@@ -394,9 +432,49 @@ export async function searchProduct(keyword: string) {
           },
         ],
       },
+      include: {
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+      },
     });
 
-    return products;
+    const productstWithConvertedRatings = products.map((item) => {
+      let totalRating = 0;
+      let totalReviews = 0;
+
+      // Calculate totalRating and totalReviews for this product
+      item.reviews.forEach((review) => {
+        totalRating += review.rating.toNumber(); // Assuming toNumber() converts it to a number
+        totalReviews++;
+      });
+
+      // Calculate the average rating for this product
+      const averageRating =
+        totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "0.0";
+
+      // Create a new object without the 'reviews' property
+      const productWithoutReviews = {
+        ...item,
+        reviews: undefined,
+      };
+
+      // Create a new product object with the calculated averageRating
+      const productWithConvertedRatings = {
+        ...productWithoutReviews,
+        averageRating: averageRating, // Add the averageRating property
+        totalReviews: totalReviews, // Add the totalReviews property
+      };
+
+      return {
+        ...item,
+        product: productWithConvertedRatings, // Replace the product with the one containing averageRating
+      };
+    });
+
+    return productstWithConvertedRatings;
   } catch (error) {
     console.error("Error searching for products:", error);
     throw error;
@@ -412,10 +490,46 @@ export async function getWishlist(email: string) {
         userEmail: email,
       },
       include: {
-        product: true,
+        product: {
+          include: {
+            reviews: {
+              select: {
+                rating: true,
+              },
+            },
+          },
+        },
       },
     });
-    return wishlist;
+    const wishlistWithConvertedRatings = wishlist.map((item) => {
+      let totalRating = 0;
+      let totalReviews = 0;
+
+      // Calculate totalRating and totalReviews for this product
+      item.product.reviews.forEach((review) => {
+        totalRating += review.rating.toNumber(); // Assuming toNumber() converts it to a number
+        totalReviews++;
+      });
+
+      // Calculate the average rating for this product
+      const averageRating =
+        totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "0.0";
+
+      // Create a new product object with the calculated averageRating
+      const productWithConvertedRatings = {
+        ...item.product,
+        reviews: item.product.reviews, // Keep the original reviews
+        averageRating: averageRating, // Add the averageRating property
+        totalReviews: totalReviews, // Add the totalReviews property
+      };
+
+      return {
+        ...item,
+        product: productWithConvertedRatings, // Replace the product with the one containing averageRating
+      };
+    });
+
+    return wishlistWithConvertedRatings;
   } catch (error) {
     console.error(error);
     return [];
@@ -438,5 +552,63 @@ export async function isInWishlist(productId: string, email: string) {
     return false;
   } finally {
     await prismadb.$disconnect();
+  }
+}
+
+export async function getAllProducts() {
+  "use server";
+  try {
+    const products = await prismadb.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        thumbnail: true,
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+      },
+    });
+    const productstWithConvertedRatings = products.map((item) => {
+      let totalRating = 0;
+      let totalReviews = 0;
+
+      // Calculate totalRating and totalReviews for this product
+      item.reviews.forEach((review) => {
+        totalRating += review.rating.toNumber(); // Assuming toNumber() converts it to a number
+        totalReviews++;
+      });
+
+      // Calculate the average rating for this product
+      const averageRating =
+        totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "0.0";
+
+      // Create a new object without the 'reviews' property
+      const productWithoutReviews = {
+        ...item,
+        reviews: undefined,
+      };
+
+      // Create a new product object with the calculated averageRating
+      const productWithConvertedRatings = {
+        ...productWithoutReviews,
+        averageRating: averageRating, // Add the averageRating property
+        totalReviews: totalReviews, // Add the totalReviews property
+      };
+
+      return {
+        ...item,
+        product: productWithConvertedRatings, // Replace the product with the one containing averageRating
+      };
+    });
+
+    return productstWithConvertedRatings;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  } finally {
+    prismadb.$disconnect;
   }
 }

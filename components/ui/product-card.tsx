@@ -29,7 +29,7 @@ const ProductCard = (props: ProductCardProps) => {
       <CardContent className="py-0">
         <Link href={`/product/${props.name}/${props.id}`}>
           <p className="text-sm text-primary font-medium cursor-pointer select-none hover:underline underline-offset-1 min-h-[80px]">
-            {props.name.length > 67
+            {props?.name?.length > 67
               ? `${props.name.slice(0, 67)}...`
               : props.name}
           </p>
@@ -37,8 +37,8 @@ const ProductCard = (props: ProductCardProps) => {
       </CardContent>
       <CardFooter className="grid">
         <span className="flex items-center ">
-          <Rating initialValue={5} size={20} />
-          <p className="text-gray-500 text-sm">(293)</p>
+          <Rating initialValue={props.averageRating} size={20} readonly />
+          <p className="text-gray-500 text-sm">({props.totalReviews})</p>
         </span>
         <p className="font-bold text-base">${props.price}</p>
       </CardFooter>

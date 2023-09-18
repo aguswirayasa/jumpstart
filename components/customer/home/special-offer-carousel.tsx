@@ -40,6 +40,8 @@ const SpecialOfferCarousel = ({ products }: SpecialOfferCarouselProps) => {
                 name: string;
                 price: number;
                 thumbnail: string;
+                averageRating: number;
+                totalReviews: number;
               },
               productIndex: React.Key | null | undefined
             ) => (
@@ -52,6 +54,8 @@ const SpecialOfferCarousel = ({ products }: SpecialOfferCarouselProps) => {
                   name={product.name}
                   price={product.price}
                   thumbnail={product.thumbnail}
+                  averageRating={product.averageRating}
+                  totalReviews={product.totalReviews}
                 />{" "}
                 {/* Pass productImages as a prop */}
               </div>

@@ -24,6 +24,8 @@ const page = async () => {
               productId={wishlist.product.id}
               thumbnail={wishlist.product.thumbnail}
               userEmail={wishlist.userEmail}
+              rating={Number(wishlist.product.averageRating)}
+              totalReview={wishlist.product.totalReviews}
             />
           </div>
         ))}

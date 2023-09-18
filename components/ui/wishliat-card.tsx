@@ -3,12 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useMutation, useQueryClient } from "react-query";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import axios from "axios";
 
-import { wishlistRequest } from "@/types";
 import {
   Card,
   CardContent,
@@ -25,39 +20,11 @@ interface WishlistCardProps {
   price: number;
   userEmail: string;
   productId: string;
+  rating: number;
+  totalReview: number;
 }
 
 const WishlistCard = (props: WishlistCardProps) => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const wishlistData = {
-    userEmail: props.userEmail || "",
-    productId: props.id,
-  };
-
-  const wishlistMutation = useMutation(
-    async (data: wishlistRequest) => {
-      const response = await axios.post("/api/wishlist/add-wishlist", data);
-      if (response.data.message === "added") {
-        toast.success("Item added to wishlist!");
-      } else {
-        toast.error("Item removed from wishlist!");
-      }
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("wishlist");
-        router.refresh();
-      },
-      onError: (error) => {
-        toast.error("Something went wrong, please try again");
-      },
-    }
-  );
-
-  const handleWishlist = (data: wishlistRequest) => {
-    wishlistMutation.mutateAsync(data);
-  };
   return (
     <Card className=" max-h-none max-w-none text-left">
       <CardHeader className="mx-auto ">
@@ -80,17 +47,16 @@ const WishlistCard = (props: WishlistCardProps) => {
       <CardFooter className="grid ">
         <span className="flex items-center ">
           <Rating
-            initialValue={5}
+            initialValue={props.rating}
             size={20}
             disableFillHover={true}
             allowHover={false}
             className="cursor-default"
             readonly
           />
-          <p className="text-gray-500 text-sm">(293)</p>
+          <p className="text-gray-500 text-sm">({props.totalReview})</p>
         </span>
         <p className="font-bold text-base">${props.price}</p>
-
         <Link href={`/product/${props.name}/${props.productId}`}>
           <Button>View Product</Button>
         </Link>

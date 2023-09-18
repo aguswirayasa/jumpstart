@@ -25,6 +25,7 @@ export type Product = {
   specifications: Specification[];
   images: Image[];
   variantOptions: Variant[];
+  createdAt?: Date;
 };
 export type Variant = {
   name: string;
@@ -55,13 +56,18 @@ export type Category = {
   id?: string;
 };
 export type ProductCardProps = {
+  [x: string]: any;
   id: string;
   thumbnail: string | null;
   name: string;
   price: number;
+  averageRating: number;
+  totalReviews: number;
+  createdAt?: Date;
 };
 
 export type Profile = {
+  avatar?: string;
   firstName: string;
   uid?: string;
   lastName: string;
