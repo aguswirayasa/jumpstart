@@ -23,29 +23,37 @@ import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
 import { deleteImageFromCloudinary } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+interface CategoryFormProps {
+  category?: Category;
+  message: string;
+}
 
 const categorySchema = z.object({
   name: z.string().min(2, "Please enter category name"),
   thumbnail: z.string().min(2, "Please enter category thumbnail"),
 });
-const AddCategoryForm = () => {
+const AddCategoryForm = ({ category, message }: CategoryFormProps) => {
   const queryClient = useQueryClient();
-  const [thumbnail, setThumbnail] = useState<string>("");
+  const [thumbnail, setThumbnail] = useState<string>(category?.thumbnail || "");
+  const router = useRouter();
   const form: UseFormReturn<Category> = useForm({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: "",
-      thumbnail: "",
+      name: category?.name || "",
+      thumbnail: category?.thumbnail || "",
     },
   });
   const addCategoryMutation = useMutation(
     async (categoryData: Category) => {
-      const response = await axios.post(
-        "/api/admin/category/add-category",
-        categoryData
-      );
+      const response = await axios.post("/api/admin/category/add-category", {
+        name: categoryData.name,
+        thumbnail: categoryData.thumbnail,
+        id: category?.id || "",
+      });
       if (response.status === 200) {
-        toast.success("Category added successfully");
+        toast.success(message);
       } else {
         toast.error("Something went wrong, please try again");
       }
@@ -55,6 +63,7 @@ const AddCategoryForm = () => {
         queryClient.invalidateQueries("category");
         setThumbnail("");
         form.reset();
+        router.push("/admin/categories");
       },
     }
   );

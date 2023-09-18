@@ -15,8 +15,6 @@ import { useRouter, useParams } from "next/navigation";
 
 import { BannersColumn } from "./columns";
 
-import "./style.css"; // Import the CSS file
-
 interface CellActionProps {
   data: BannersColumn;
 }
@@ -26,7 +24,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
-  const params = useParams();
 
   const onConfirm = async () => {
     try {

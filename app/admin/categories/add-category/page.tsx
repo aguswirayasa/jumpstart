@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold">Add Category</h2>
-      <AddCategoryForm />
+      <AddCategoryForm message="Category added successfully" />
     </div>
   );
 };

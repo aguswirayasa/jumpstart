@@ -643,3 +643,22 @@ export async function getAllActiveBanners() {
     await prismadb.$disconnect();
   }
 }
+export async function getCategoryById(id: string) {
+  try {
+    const result = await prismadb.category.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        thumbnail: true,
+      },
+    });
+    return result;
+  } catch (error) {
+    return null;
+  } finally {
+    prismadb.$disconnect();
+  }
+}

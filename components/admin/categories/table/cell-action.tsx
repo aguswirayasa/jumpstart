@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, Loader2, MoreHorizontal, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -26,29 +26,42 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const params = useParams();
+
+  const [message, setMessage] = useState("");
 
   const onConfirm = async () => {
     try {
+      setMessage("Deleting category...");
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${data.id}`);
-      toast.success("Product deleted.");
+      await axios.delete(`/api/admin/category/${data.id}/delete/`);
+      toast.success("Category deleted.");
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
       setOpen(false);
+      setMessage("");
+      router.refresh();
     }
   };
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Product ID copied to clipboard.");
+    toast.success("Category ID copied to clipboard.");
   };
 
   return (
     <>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="flex gap-3 text-white text-xl">
+            <Loader2 className="animate-spin" />
+            <p>{message}</p>
+          </div>
+        </div>
+      )}
+
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
@@ -68,9 +81,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${params.storeId}/products/${data.id}`)
-            }
+            onClick={() => router.push(`categories/update/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
