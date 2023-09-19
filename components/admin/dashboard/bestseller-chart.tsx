@@ -26,11 +26,15 @@ const BestSellerChart = ({ dataPoints }: BestSellerChartProps) => {
       const firstWord = words[0].replace("-", "");
       const secondWord = words[1].replace("-", "");
 
-      return `${firstWord} ${secondWord} (${item.productVariant})`;
+      return `${firstWord} ${secondWord} ${
+        item.productVariant && "(" + item.productVariant + ")"
+      }`;
     } else if (words.length === 1) {
       return words[0]; // Keep single word unchanged
     } else {
-      return `${item.name} (${item.productVariant})`; // Use the full name if it has fewer than one word
+      return `${item.name} (${
+        item.productVariant && "(" + item.productVariant + ")"
+      }`; // Use the full name if it has fewer than one word
     }
   });
 

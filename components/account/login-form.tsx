@@ -52,6 +52,10 @@ const LoginForm = () => {
       toast.success(
         "Email verification successful, You now can login to your account"
       );
+    } else if (searchParams.get("resetPasswordSuccess")) {
+      toast.success(
+        "Reset password successful, You now can login with your new password"
+      );
     }
   }, []);
   useEffect(() => {
@@ -143,6 +147,10 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
+          <Link href={"/reset"}>
+            <p>Forget password? </p>
+          </Link>
+
           <Button
             type="submit"
             disabled={isLoading}

@@ -9,6 +9,7 @@ import { Toaster, toast } from "react-hot-toast";
 const VefifyPage = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const isReset = searchParams.get("reset");
   const initialTimer = sessionStorage.getItem("timer") || 30;
   const [timer, setTimer] = useState(Number(initialTimer));
 
@@ -32,7 +33,7 @@ const VefifyPage = () => {
         sessionStorage.setItem("timer", "30");
       }
 
-      const response = await axios.post(`/api/resend-email/${id}`);
+      const response = await axios.post(`/api/resend-email/${id}`, { isReset });
       if (response.status === 200) {
         toast.success("Email verification sent successfully!");
       } else {
@@ -54,11 +55,13 @@ const VefifyPage = () => {
         className="relative"
       />
       <div className="max-w-2xl text-center space-y-3">
-        <h1 className="text-3xl font-bold">Verify Your Email</h1>
+        <h1 className="text-3xl font-bold">
+          {isReset ? "Reset Password" : "Verify Your Email"}
+        </h1>
         <p className="text-lg ">
-          An email verification link has been sent to your inbox. Please check
-          your email and click the link to activate your Jumpstart account.
-          Thank you!
+          {isReset
+            ? "An reset password link has been sent to your inbox. Please check your email and click the link to reset your Jumpstart account password.Thank you!"
+            : " An email verification link has been sent to your inbox. Please check your email and click the link to activate your Jumpstart account.Thank you!"}
         </p>
         <span className="flex justify-center">
           {timer ? (

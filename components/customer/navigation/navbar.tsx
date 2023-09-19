@@ -53,7 +53,13 @@ const Navbar = ({ categories }: NavbarProps) => {
                 className="md:hidden block"
               />
               <div className="flex-shrink-0 hidden md:block">
-                <Image src="/logo.png" width={200} height={200} alt="Logo" />
+                <Image
+                  src="/logo.png"
+                  width={200}
+                  height={200}
+                  alt="Logo"
+                  loading="eager"
+                />
               </div>
             </Link>
 

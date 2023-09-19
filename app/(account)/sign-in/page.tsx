@@ -1,4 +1,4 @@
-import LoginForm from "@/components/login-form";
+import LoginForm from "@/components/account/login-form";
 import AuthFooter from "@/components/ui/auth-footer";
 
 const page = () => {

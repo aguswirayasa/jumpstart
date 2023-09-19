@@ -26,7 +26,13 @@ const AutoPlayCarousel = ({ images }: AutoPlayCarouselProps) => {
           key={index}
           className="h-[160px] md:h-[315px] lg:h-[400px] w-full relative"
         >
-          <Image src={image.url} alt={""} fill className="  rounded-md" />
+          <Image
+            src={image.url}
+            alt={""}
+            loading="eager"
+            fill
+            className="   rounded-md"
+          />
         </div>
       ))}
     </Carousel>

@@ -165,7 +165,9 @@ const AddToCart = ({
             </p>
           )}
         </div>
-        <p className="text-xl font-semibold my-3">Subtotal : ${subtotal}</p>
+        <p className="text-xl font-semibold my-3">
+          Subtotal : ${subtotal.toFixed(2)}
+        </p>
         <div className="space-y-3">
           <div className="grid grid-cols-2 space-x-3">
             <AddToCartButton

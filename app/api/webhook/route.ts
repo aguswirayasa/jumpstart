@@ -1,6 +1,3 @@
-export const runtime = "edge"; // 'nodejs' is the default
-export const preferredRegion = "sin1";
-
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -27,12 +24,11 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
-  console.log("WEBHOOK");
-  console.log(session.metadata?.shippingAddress);
+
   const shippingAddress: Address = JSON.parse(
     session?.metadata?.shippingAddress || ""
   );
-  console.log(shippingAddress);
+
   const addressComponents = [
     shippingAddress.street,
     shippingAddress.city,
@@ -76,8 +72,8 @@ export async function POST(req: Request) {
                 : "",
             },
           });
-          await incrementSaleAmount(Number((totalPrice / 100).toFixed(2)) || 0);
         }
+        await incrementSaleAmount(Number((totalPrice / 100).toFixed(2)) || 0);
 
         console.log("Order created:", newOrder);
       } catch (error: any) {

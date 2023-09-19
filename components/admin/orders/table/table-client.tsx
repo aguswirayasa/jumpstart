@@ -17,6 +17,7 @@ export const OrdersClient: React.FC<OrdersClientProps> = ({ data }) => {
       </div>
       <Separator />
       <DataTable
+        searchBar
         searchPlaceholder="Search by customer name"
         searchKey="customerName"
         columns={columns}

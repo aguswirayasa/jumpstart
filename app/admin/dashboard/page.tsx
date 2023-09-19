@@ -34,7 +34,9 @@ const page = async () => {
           </div>
           <div className="col-span-2">
             <h1 className="text-2xl font-bold text-white">Total Sales</h1>
-            <p className="text-sm text-white">${statistics.totalSales}</p>
+            <p className="text-sm text-white">
+              ${statistics.totalSales.toFixed(1)}
+            </p>
           </div>
         </Card>
         <Card className="bg-primary col-span-1 grid grid-cols-3 p-5">
