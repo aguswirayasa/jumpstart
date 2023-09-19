@@ -662,3 +662,51 @@ export async function getCategoryById(id: string) {
     prismadb.$disconnect();
   }
 }
+export async function getProductById(id: string) {
+  try {
+    const result = await prismadb.product.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        thumbnail: true,
+        category: true,
+        categoryId: true,
+        price: true,
+        stock: true,
+        productImages: true,
+        specifications: true,
+        variantOption: true,
+        createdAt: true,
+      },
+    });
+
+    if (!result) {
+      return null; // Return null if the product doesn't exist
+    }
+
+    // Create a formatted product object
+    const formattedProduct = {
+      id: id,
+      name: result.name || "",
+      description: result.description || "",
+      price: result.price || 0,
+      thumbnail: result.thumbnail || "",
+      stock: result.stock + "" || "0",
+      categoryId: result.categoryId || "",
+      specifications: result.specifications || [],
+      images: result.productImages || [],
+      variantOptions: result.variantOption || [],
+    };
+
+    return formattedProduct;
+  } catch (error) {
+    console.error("Error:", error);
+    return null; // Return null if an error occurs
+  } finally {
+    await prismadb.$disconnect();
+  }
+}

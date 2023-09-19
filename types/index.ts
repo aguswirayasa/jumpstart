@@ -25,7 +25,6 @@ export type Product = {
   specifications: Specification[];
   images: Image[];
   variantOptions: Variant[];
-  createdAt?: Date;
 };
 export type Variant = {
   name: string;
@@ -100,4 +99,27 @@ export type UserData = {
   id: string;
   name: string;
   email: string;
+};
+export type variantOptions = {
+  id?: string;
+  name: string;
+  stock: number;
+};
+export type UpdateProduct = {
+  name: string;
+  description: string;
+  price: string;
+  thumbnail: string;
+  categoryId: string;
+  specifications: UpdateSpecification[];
+  images: UpdateImage[];
+};
+export type UpdateSpecification = {
+  name: string;
+  value: string;
+  id?: string;
+};
+export type UpdateImage = {
+  url: string;
+  id?: string;
 };

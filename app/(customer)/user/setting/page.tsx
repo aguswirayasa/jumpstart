@@ -20,6 +20,7 @@ import { format } from "date-fns";
 import { AddressModal } from "@/components/modal/add-address-modal";
 import Link from "next/link";
 import { AddImageModal } from "@/components/modal/add-image-modal";
+import { DeleteAddressModal } from "@/components/modal/delete-address-modal";
 
 const page = async () => {
   const session = await getServerSession();
@@ -167,9 +168,7 @@ const page = async () => {
                             modalButton={<PenSquareIcon />}
                           />
                         </div>
-                        <div className="font-medium text-red-500 cursor-pointer">
-                          <Trash2 />
-                        </div>
+                        <DeleteAddressModal addressId={address.id!} />
                       </div>
                     </CardContent>
                   </Card>

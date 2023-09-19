@@ -13,7 +13,16 @@ import { AiFillPlusCircle } from "react-icons/ai";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 
-import { Categories, Image, Product, Specification, Variant } from "@/types";
+import {
+  Categories,
+  Image as Images,
+  Product,
+  Specification,
+  UpdateImage,
+  UpdateProduct,
+  UpdateSpecification,
+  Variant,
+} from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -34,13 +43,27 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "../../ui/badge";
 import { deleteImageFromCloudinary } from "@/lib/utils";
+import { Category } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+
+interface UpdateProductProps {
+  categories: Category[];
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  productThumbnail: string;
+  categoryId: string;
+  specifications: UpdateSpecification[];
+  images: UpdateImage[];
+}
 
 const productSchema = z.object({
   name: z.string().min(2, "Please enter product name"),
   description: z.string().min(4, "Please enter product description"),
   price: z.string().min(1, "Please enter product price"),
   thumbnail: z.string().min(1, "Please enter product thumbnail"),
-  stock: z.string().min(1, "Please enter product stock"),
   categoryId: z.string(),
   specifications: z
     .array(
@@ -57,68 +80,52 @@ const productSchema = z.object({
       })
     )
     .nonempty("Please upload an image"),
-  variant: z.array(z.string()).optional(),
-  variantOptions: z
-    .array(
-      z.object({
-        name: z.string(),
-
-        stock: z.string().min(0),
-      })
-    )
-    .optional(),
 });
 
-const AddProductForm = ({ categories }: { categories: Categories[] }) => {
+const UpdateProductForm = ({
+  categories,
+  categoryId,
+  description,
+  id,
+  images,
+  name,
+  price,
+  specifications,
+  productThumbnail,
+}: UpdateProductProps) => {
   const queryClient = useQueryClient();
 
   const [specName, setSpecName] = useState("");
   const [specValue, setSpecValue] = useState("");
-  const [displayedSpecifications, setDisplayedSpecifications] = useState<
-    Specification[]
-  >([]);
-  const [thumbnail, setThumbnail] = useState<string>("");
-  const [variants, setVariants] = useState([
-    {
-      name: "",
+  const [displayedSpecifications, setDisplayedSpecifications] =
+    useState<UpdateSpecification[]>(specifications);
+  const [thumbnail, setThumbnail] = useState<string>(productThumbnail);
+  const router = useRouter();
+  const [uploadedImages, setUploadedImages] = useState<UpdateImage[]>(images);
 
-      stock: 0,
-    },
-  ]);
-
-  // Function to add a new empty variant object
-  const addVariant = () => {
-    setVariants([...variants, { name: "", stock: 0 }]);
-  };
-
-  const [uploadedImages, setUploadedImages] = useState<Image[]>([]);
-
-  const form: UseFormReturn<Product> = useForm({
+  const form: UseFormReturn<UpdateProduct> = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      thumbnail: "",
-      stock: "",
-      categoryId: "",
-      specifications: [] as Specification[],
-      images: [] as Image[],
-      variantOptions: [] as Variant[],
+      name: name || "",
+      description: description || "",
+      price: price || "0",
+      thumbnail: productThumbnail || "",
+      categoryId: categoryId || "",
+      specifications: specifications || [],
+      images: images || [],
     },
   });
 
   const addProductMutation = useMutation(
-    async (productData: Product) => {
+    async (productData: UpdateProduct) => {
       try {
-        const data = { ...productData, variants };
         const response = await axios.post(
-          "/api/admin/product/add-product",
-          data
+          `/api/admin/product/${id}/update`,
+          productData
         );
 
         if (response.status === 200) {
-          toast.success("Product added successfully");
+          toast.success("Product updated successfully");
         } else {
           toast.error("Something went wrong, please try again");
         }
@@ -129,28 +136,24 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("products");
-        form.reset();
-        setDisplayedSpecifications([]);
-        setUploadedImages([]);
-        setThumbnail("");
-        setVariants([]);
+        router.push("/admin/products");
       },
     }
   );
-  const addSpecification = (newSpec: Specification) => {
+  const addSpecification = (newSpec: UpdateSpecification) => {
     form.setValue(
       "specifications",
       form.getValues("specifications").concat(newSpec)
     );
   };
-  const addImage = (newImage: Image) => {
+  const addImage = (newImage: UpdateImage) => {
     form.setValue("images", form.getValues("images").concat(newImage));
   };
   const addThumbnail = (thumbnail: string) => {
     form.setValue("thumbnail", thumbnail);
   };
 
-  const onSubmit = async (data: Product) => {
+  const onSubmit = async (data: UpdateProduct) => {
     addProductMutation.mutate(data);
   };
 
@@ -185,7 +188,10 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={categoryId} // Set the default value to the product's categoryId
+                  >
                     <FormLabel>Product Category</FormLabel>
                     <FormControl>
                       <SelectTrigger>
@@ -215,23 +221,6 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
                 <FormControl>
                   <Input
                     placeholder="Product Price"
-                    {...field}
-                    className="col-span-1"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="stock"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Product Stock</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Product Stock"
                     {...field}
                     className="col-span-1"
                   />
@@ -296,7 +285,7 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             {thumbnail && (
               <div className="flex flex-wrap gap-3 my-3">
                 <div className="relative">
-                  <CldImage
+                  <Image
                     width="300"
                     height="300"
                     src={thumbnail}
@@ -357,7 +346,7 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             <div className="flex flex-wrap gap-3 my-3">
               {uploadedImages.map((image, index) => (
                 <div key={index} className="relative">
-                  <CldImage
+                  <Image
                     width="100"
                     height="100"
                     src={image.url}
@@ -387,53 +376,6 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             </div>
           </div>
 
-          <div className="mb-3">
-            <h2 className="font-medium text-xl mb-3">Product Color Variant</h2>
-
-            {variants.map((variant, index) => (
-              <div key={index} className="flex gap-1 items-center mb-3">
-                <p className="text-gray-400 text-sm">{index + 1}.</p>
-                <Input
-                  placeholder="Name"
-                  value={variant.name}
-                  onChange={(e) => {
-                    const updatedVariants = [...variants];
-                    updatedVariants[index].name = e.target.value;
-                    setVariants(updatedVariants);
-                  }}
-                  className="col-span-1"
-                />
-
-                <Input
-                  placeholder="Stock"
-                  value={form.getValues(`variantOptions.${index}.stock`)}
-                  onChange={(e) => {
-                    const updatedVariants = [...variants];
-                    updatedVariants[index].stock = parseInt(e.target.value);
-                    setVariants(updatedVariants);
-                  }}
-                  className="col-span-1"
-                />
-                <span
-                  className="text-red-500 text-xl cursor-pointer select-none"
-                  onClick={() => {
-                    const updatedVariants = [...variants];
-                    updatedVariants.splice(index, 1); // Remove the variant at the specified index
-                    setVariants(updatedVariants);
-                  }}
-                >
-                  <TiDelete />
-                </span>
-              </div>
-            ))}
-            <span
-              onClick={addVariant}
-              className="flex gap-1 items-center select-none cursor-pointer text-primary"
-            >
-              <AiFillPlusCircle />
-              <p>Add Variant Option</p>
-            </span>
-          </div>
           <div className="flex flex-col">
             <h2 className="font-medium text-xl ">Product Specification</h2>
             <div className="mb-3">
@@ -520,10 +462,10 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
             {addProductMutation.isLoading ? (
               <>
                 <Loader2 className="animate-spin" />
-                <p>Saving product...</p>
+                <p>Upddating product...</p>
               </>
             ) : (
-              "Save Product"
+              "Update Product"
             )}
           </Button>
         </div>
@@ -532,4 +474,4 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
   );
 };
 
-export default AddProductForm;
+export default UpdateProductForm;
