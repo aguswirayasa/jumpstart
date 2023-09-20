@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { signIn, useSession } from "next-auth/react";
@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CustomIcon from "@/components/ui/icons";
 import { useProfileStore } from "@/lib/store";
+import { ChevronDown, LogIn, Menu, ShoppingBag, UserPlus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface NavbarProps {
   categories: { name: string }[];
@@ -27,6 +29,8 @@ const Navbar = ({ categories }: NavbarProps) => {
   const session = useSession();
   const user = session.data?.user;
   const router = useRouter();
+  const [show, setShow] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(true);
   const setAvatar = useProfileStore((state) => state.setAvatarUrl);
   const setName = useProfileStore((state) => state.setName);
   const { avatarUrl, name } = useProfileStore();
@@ -76,9 +80,17 @@ const Navbar = ({ categories }: NavbarProps) => {
                 <BsSearch />
               </button>
             </form>
+
+            <Menu
+              className={`block sm:hidden ${
+                show ? "rotate-90" : ""
+              } duration-200 ease-in-out transition-transform cursor-pointer`}
+              onClick={() => setShow(!show)}
+            />
+
             {user ? (
               <div className="flex space-x-10 justify-between items-center">
-                <Link href={"/cart"}>
+                <Link href={"/cart"} className="hidden sm:block">
                   <span className="text-2xl">
                     <GrCart />
                   </span>
@@ -93,7 +105,7 @@ const Navbar = ({ categories }: NavbarProps) => {
               </div>
             ) : (
               <>
-                <div className="flex">
+                <div className="hidden sm:flex">
                   <Button
                     className=" px-4 py-2 rounded-md text-primary  mx-2"
                     variant={"outline"}
@@ -110,7 +122,7 @@ const Navbar = ({ categories }: NavbarProps) => {
               </>
             )}
           </div>
-          <div className="flex justify-center pb-3">
+          <div className="hidden sm:flex justify-center pb-3">
             <div className="flex items-center gap-3">
               {categories.slice(0, 5).map((category, index) => (
                 <Link href={`/search?keyword=${category.name}`} key={index}>
@@ -123,6 +135,63 @@ const Navbar = ({ categories }: NavbarProps) => {
           </div>
         </nav>
       )}
+      <div
+        className={`w-full shadow-lg bg-white z-30 block sm:hidden ${
+          show ? "max-h-[500px]" : "max-h-0"
+        } transition-all duration-200 ease-in-out overflow-hidden`}
+      >
+        <Separator />
+        <ul className="text-lg">
+          {!user ? (
+            <>
+              <li
+                className="flex gap-3 border-b border-gray-300 p-3 items-center hover:bg-black/10"
+                onClick={() => signIn()}
+              >
+                <LogIn /> Sign In
+              </li>
+
+              <Link href={"/sign-up"}>
+                <li className="flex gap-3 border-b border-gray-300 p-3 items-center hover:bg-black/10">
+                  <UserPlus /> Sign Up
+                </li>
+              </Link>
+            </>
+          ) : (
+            <Link href={"/cart"}>
+              <li className="flex gap-4 border-b border-gray-300 p-3 items-center hover:bg-black/10">
+                <GrCart /> Cart
+              </li>
+            </Link>
+          )}
+
+          <li className="gap-1 border-b border-gray-300">
+            <span
+              className="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-black/10"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <span className="flex gap-3 ">
+                <ShoppingBag />
+                Categories
+              </span>{" "}
+              <ChevronDown
+                className={`${
+                  showDropdown ? "rotate-180" : ""
+                } duration-200 transition-transform ease-in-out`}
+              />
+            </span>
+            <div className={`dropdown ${showDropdown ? "open" : ""}`}>
+              {categories.slice(0, 5).map((category, index) => (
+                <Link href={`/search?keyword=${category.name}`} key={index}>
+                  <li className="flex gap-1 border-b border-gray-300 p-3 items-center hover:bg-black/10">
+                    {category.name}
+                  </li>
+                </Link>
+              ))}
+            </div>
+          </li>
+        </ul>
+      </div>
     </>
   );
 };

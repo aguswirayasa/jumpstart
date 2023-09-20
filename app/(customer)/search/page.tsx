@@ -151,6 +151,7 @@ const SearchPage = () => {
                           thumbnail={item.product.thumbnail}
                           averageRating={Number(item.product.averageRating)}
                           totalReviews={item.product.totalReviews}
+                          sold={item.product.sold}
                         />
                       </div>
                     </>

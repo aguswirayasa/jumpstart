@@ -1,3 +1,4 @@
+import { OrderReceive } from "@/components/customer/home/receive-order-button";
 import ReviewModal from "@/components/modal/review-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getUserOrderHistory } from "@/lib/server-utils";
+import { format } from "date-fns";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,7 +22,7 @@ const page = async () => {
   const orderHistory = await getUserOrderHistory(email);
   return (
     <div className="max-w-none md:max-w-5xl  m-10 md:mx-auto  md:my-20 min-h-screen">
-      <h1 className="font-black text-3xl text-primary">Orders History</h1>
+      <h1 className="font-black text-3xl text-primary">My Orders</h1>
       {orderHistory.map((order, index) => (
         <Card className="my-5 shadow-lg" key={order.id}>
           {order.orderItems.map((orderItem, index) => (
@@ -56,28 +58,49 @@ const page = async () => {
                   <h3 className="font-bold">
                     ${orderItem.product.price} x {orderItem.quantity}
                   </h3>
-
-                  <ReviewModal
-                    orderItemsId={orderItem.id}
-                    productImage={orderItem.product.thumbnail}
-                    productName={orderItem.product.name}
-                    productVariant={orderItem.productVariant || ""}
-                    productId={orderItem.productId}
-                    userEmail={email}
-                    isReviewed={orderItem.isReviewed}
-                  />
+                  {order.status === "COMPLETED" && (
+                    <ReviewModal
+                      orderItemsId={orderItem.id}
+                      productImage={orderItem.product.thumbnail}
+                      productName={orderItem.product.name}
+                      productVariant={orderItem.productVariant || ""}
+                      productId={orderItem.productId}
+                      userEmail={email}
+                      isReviewed={orderItem.isReviewed}
+                    />
+                  )}
                 </div>
               </CardContent>
             </div>
           ))}
 
           <Separator className="my-3" />
-          <CardFooter className="block md:flex justify-between gap-3">
-            <span className="bg-green-300 rounded-xl text-center px-3 py-1 md:px-10 text-green-700">
-              Order Completed
+          <CardFooter className="block md:grid grid-cols-5 justify-between gap-3">
+            <span className="text-left font-medium  col-span-2">
+              {order.status === "PROCESSING" && "Your order is being process"}
+              {order.status === "ON_DELIVERY" &&
+                `Your order will be arrive on ${format(
+                  order.expectedDelivery!,
+                  "MMMM do, yyyy"
+                )}`}
+              {order.status === "COMPLETED" &&
+                `Order recieved on ${format(
+                  order.completedDate!,
+                  "MMMM do, yyyy"
+                )}`}
             </span>
-            <div className="space-x-3 flex items-center my-3 md:my-0">
-              <h3 className="font-bold">Grand Total: ${order.totalPrice}</h3>
+            <div className="col-span-2">
+              {order.status === "ON_DELIVERY" && (
+                <OrderReceive
+                  message="Order completed, thank for your order!"
+                  orderId={order.id}
+                />
+              )}
+            </div>
+            <div className="space-x-3 w-full my-3 md:my-0 col-span-1 text-right">
+              <h3 className="font-bold">
+                Grand Total: ${order.totalPrice.toLocaleString("en-US")}
+              </h3>
             </div>
           </CardFooter>
         </Card>

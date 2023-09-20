@@ -226,6 +226,9 @@ export async function getUserOrderHistory(email: string) {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return orderHistory;
   } catch (error) {
@@ -717,20 +720,104 @@ export async function getProductById(id: string) {
   }
 }
 export async function getListOfBestSelling() {
-  // const bestSellingProducts = await prismadb.product.aggregate({
-  //   take: 12,
-  //   _sum:{
-  //   }
-  //   select: {
-  //     name: true,
-  //     description: true,
-  //     price: true,
-  //     // Add other fields you want to include here.
-  //     orderItem: {
-  //       _sum: {
-  //         quantity: true, // Include the sum of quantity for each product
-  //       },
-  //     },
-  //   },
-  // });
+  try {
+    const products = await prismadb.product.findMany({
+      orderBy: {
+        sold: "desc",
+      },
+      select: {
+        id: true,
+        thumbnail: true,
+        name: true,
+        sold: true,
+        price: true,
+        reviews: true,
+      },
+    });
+    const productstWithConvertedRatings = products.map((item) => {
+      let totalRating = 0;
+      let totalReviews = 0;
+
+      // Calculate totalRating and totalReviews for this product
+      item.reviews.forEach((review) => {
+        totalRating += review.rating.toNumber(); // Assuming toNumber() converts it to a number
+        totalReviews++;
+      });
+
+      // Calculate the average rating for this product
+      const averageRating =
+        totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "0.0";
+
+      // Create a new object without the 'reviews' property
+      const { reviews, ...productWithoutReviews } = item; // Remove the reviews property
+
+      // Create a new product object with the calculated averageRating
+      const productWithConvertedRatings = {
+        ...productWithoutReviews,
+        averageRating: averageRating, // Add the averageRating property
+        totalReviews: totalReviews, // Add the totalReviews property
+      };
+
+      return {
+        ...productWithConvertedRatings, // Replace the product with the one containing averageRating
+      };
+    });
+
+    return productstWithConvertedRatings;
+  } catch (error) {
+    return [];
+  } finally {
+    prismadb.$disconnect();
+  }
+}
+export async function getNewProducts() {
+  try {
+    const products = await prismadb.product.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        thumbnail: true,
+        name: true,
+        price: true,
+        reviews: true,
+        sold: true,
+      },
+    });
+    const productstWithConvertedRatings = products.map((item) => {
+      let totalRating = 0;
+      let totalReviews = 0;
+
+      // Calculate totalRating and totalReviews for this product
+      item.reviews.forEach((review) => {
+        totalRating += review.rating.toNumber(); // Assuming toNumber() converts it to a number
+        totalReviews++;
+      });
+
+      // Calculate the average rating for this product
+      const averageRating =
+        totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : "0.0";
+
+      // Create a new object without the 'reviews' property
+      const { reviews, ...productWithoutReviews } = item; // Remove the reviews property
+
+      // Create a new product object with the calculated averageRating
+      const productWithConvertedRatings = {
+        ...productWithoutReviews,
+        averageRating: averageRating, // Add the averageRating property
+        totalReviews: totalReviews, // Add the totalReviews property
+      };
+
+      return {
+        ...productWithConvertedRatings, // Replace the product with the one containing averageRating
+      };
+    });
+
+    return productstWithConvertedRatings;
+  } catch (error) {
+    return [];
+  } finally {
+    prismadb.$disconnect();
+  }
 }

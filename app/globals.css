@@ -75,3 +75,15 @@
 .star-svg {
   display: inline;
 }
+
+/* Initial state of the dropdown */
+.dropdown {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out; /* Adjust the duration as needed */
+}
+
+/* When the dropdown is open */
+.dropdown.open {
+  max-height: 300px; /* Adjust the maximum height as needed */
+}

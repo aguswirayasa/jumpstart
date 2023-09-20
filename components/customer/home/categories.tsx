@@ -48,7 +48,7 @@ const Categories = ({ categories }: CategoriesProps) => {
               categoryIndex: React.Key | null | undefined
             ) => (
               <div
-                className="col-span-3 sm:col-span-2 lg:col-span-1"
+                className="col-span-6 sm:col-span-4 md:col-span-2 lg:col-span-1"
                 key={categoryIndex}
               >
                 <Link href={`/search?keyword=${category.name}`}>

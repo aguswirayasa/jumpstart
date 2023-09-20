@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
+import { Badge } from "./badge";
 
 const ProductCard = (props: ProductCardProps) => {
   return (
@@ -35,12 +36,15 @@ const ProductCard = (props: ProductCardProps) => {
           </p>
         </Link>
       </CardContent>
-      <CardFooter className="grid">
+      <CardFooter className="grid gap-y-1">
         <span className="flex items-center ">
           <Rating initialValue={props.averageRating} size={20} readonly />
           <p className="text-gray-500 text-sm">({props.totalReviews})</p>
         </span>
-        <p className="font-bold text-base">${props.price}</p>
+        <div className="flex justify-between items-center flex-wrap">
+          <p className="font-bold text-base">${props.price}</p>
+          {props.sold && <Badge>{props.sold} sold</Badge>}
+        </div>
       </CardFooter>
     </Card>
   );

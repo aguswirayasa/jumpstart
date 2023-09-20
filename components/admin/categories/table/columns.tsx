@@ -21,6 +21,7 @@ export const columns: ColumnDef<CategoriesColumn>[] = [
   },
   {
     id: "actions",
+
     cell: ({ row }) => <CellAction data={row.original} />,
   },
 ];

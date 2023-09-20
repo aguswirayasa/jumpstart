@@ -54,14 +54,19 @@ const page = async () => {
             <div>
               <h3 className="font-semibold">Activity</h3>
               <ul className="p-3 space-y-3">
-                <li className="flex gap-3">
-                  <CustomIcon icon={BsFillSuitHeartFill} color="text-red-500" />
-                  Wishlist
-                </li>
+                <Link href={"/user/wishlist"}>
+                  <li className="flex gap-3">
+                    <CustomIcon
+                      icon={BsFillSuitHeartFill}
+                      color="text-red-500"
+                    />
+                    My Wishlist
+                  </li>
+                </Link>
                 <Link href={"/user/orders-history"}>
                   <li className="flex gap-3">
                     <CustomIcon icon={FaBoxesStacked} color="text-primary" />
-                    Order History
+                    My Order
                   </li>
                 </Link>
               </ul>

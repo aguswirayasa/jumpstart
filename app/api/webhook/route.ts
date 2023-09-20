@@ -63,6 +63,7 @@ export async function POST(req: Request) {
         const newOrder = await prismadb.orders.create({
           data: {
             isPaid: true, // You can set this based on the event
+            status: "PROCESSING",
             phone: session.customer_details?.phone || "",
             address: addressString || "",
             userEmail: session.metadata?.email, // Associate the order with the user

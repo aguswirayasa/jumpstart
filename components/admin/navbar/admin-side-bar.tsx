@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { FiShoppingCart, FiMail } from "react-icons/fi";
+import { FaRegNewspaper } from "react-icons/fa6";
 import { HiOutlineHome } from "react-icons/hi";
 import { BsBoxSeam } from "react-icons/bs";
 import { PiHandbagBold } from "react-icons/pi";
@@ -43,6 +44,11 @@ const navLinks = [
     href: "/admin/mails",
     icon: <FiMail />,
     text: "Mails",
+  },
+  {
+    href: "/admin/banners",
+    icon: <FaRegNewspaper />,
+    text: "Banners",
   },
   // Add more navigation links as needed
 ];

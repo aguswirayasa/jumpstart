@@ -6,22 +6,16 @@ import prismadb from "@/lib/prismadb";
 import {
   getAllActiveBanners,
   getAllProducts,
+  getBestSellerItem,
   getCategories,
+  getListOfBestSelling,
+  getNewProducts,
 } from "@/lib/server-utils";
 
 export default async function Home() {
-  const products = await getAllProducts();
+  const newArrival = await getNewProducts();
+  const bestSeller = await getListOfBestSelling();
   const categories = await getCategories();
-
-  // Map and reshape the products array to match ProductCardProps
-  const reshapedProducts = products.map((product) => ({
-    id: product.product.id,
-    thumbnail: product.product.thumbnail,
-    name: product.product.name,
-    price: product.product.price,
-    averageRating: Number(product.product.averageRating),
-    totalReviews: product.product.totalReviews,
-  }));
 
   const images = await getAllActiveBanners();
   return (
@@ -29,12 +23,12 @@ export default async function Home() {
       <AutoPlayCarousel images={images} />
       <div className="flex flex-col justify-center items-center mt-10 gap-3 ">
         <h2 className="text-2xl font-bold self-start ">New Arrival</h2>
-        <SpecialOfferCarousel products={reshapedProducts} />
+        <SpecialOfferCarousel products={newArrival} />
       </div>
       <Separator className="my-8" />
       <div className="flex flex-col justify-center items-center  gap-3 ">
-        <h2 className="text-2xl font-bold self-start ">Special Offers</h2>
-        <SpecialOfferCarousel products={reshapedProducts} />
+        <h2 className="text-2xl font-bold self-start ">Best Sellers</h2>
+        <SpecialOfferCarousel products={bestSeller} />
       </div>
       <Separator className="my-8" />
       <div className="flex flex-col justify-center items-center  gap-3 ">

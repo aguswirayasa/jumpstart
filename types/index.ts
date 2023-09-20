@@ -63,6 +63,7 @@ export type ProductCardProps = {
   averageRating: number;
   totalReviews: number;
   createdAt?: Date;
+  sold?: number;
 };
 
 export type Profile = {

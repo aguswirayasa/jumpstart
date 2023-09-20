@@ -122,6 +122,10 @@ model Orders {
   id          String      @id @default(uuid())
   orderItems  OrderItem[] 
   isPaid      Boolean     @default(false)
+ 
+  status String @default("PROCESSING")
+  expectedDelivery DateTime?
+  completedDate DateTime?
   phone       String      @default("")
   address     String      @default("")
   totalPrice  Float       @default(0)

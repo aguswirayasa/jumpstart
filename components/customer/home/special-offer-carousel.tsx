@@ -6,7 +6,15 @@ import React from "react";
 import { Carousel } from "react-responsive-carousel";
 
 interface SpecialOfferCarouselProps {
-  products: ProductCardProps[];
+  products: {
+    averageRating: string;
+    totalReviews: number;
+    id: string;
+    name: string;
+    thumbnail: string;
+    price: number;
+    sold?: number;
+  }[];
 }
 
 const SpecialOfferCarousel = ({ products }: SpecialOfferCarouselProps) => {
@@ -42,6 +50,7 @@ const SpecialOfferCarousel = ({ products }: SpecialOfferCarouselProps) => {
                 thumbnail: string;
                 averageRating: number;
                 totalReviews: number;
+                sold: number;
               },
               productIndex: React.Key | null | undefined
             ) => (
@@ -56,6 +65,7 @@ const SpecialOfferCarousel = ({ products }: SpecialOfferCarouselProps) => {
                   thumbnail={product.thumbnail}
                   averageRating={product.averageRating}
                   totalReviews={product.totalReviews}
+                  sold={product.sold}
                 />{" "}
                 {/* Pass productImages as a prop */}
               </div>

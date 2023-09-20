@@ -106,8 +106,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             </div>
             <div>
               <p className="font-medium">{productName}</p>
-
-              <Badge>{variant}</Badge>
+              {variant && <Badge>{variant}</Badge>}
             </div>
           </div>
           <div className="flex items-center space-x-2">

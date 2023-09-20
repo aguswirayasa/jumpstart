@@ -76,8 +76,10 @@ const BestSellerChart = ({ dataPoints }: BestSellerChartProps) => {
           ],
         }}
       />
-      <Link href={"/admin/products"}>
-        <Button variant={"outline"}>View More</Button>
+      <Link href={"/admin/products"} className="w-full">
+        <Button variant={"outline"} className="w-full">
+          View More
+        </Button>
       </Link>
     </Card>
   );

@@ -27,10 +27,13 @@ const page = async () => {
       address: item.address,
       customerName: item.user?.firstName + " " + item.user?.lastName,
       phoneNumber: item.phone,
-      status: item.isPaid ? "Completed" : "Unpaid",
+      status: item.status,
       totalPrice: "$" + item.totalPrice.toLocaleString("en-US"),
       products: products,
       createdAt: format(item.createdAt, "MMMM do, yyyy"),
+      completedDate: item.completedDate
+        ? format(item.completedDate, "MMMM do, yyyy")
+        : "Not completed",
     };
   });
 
