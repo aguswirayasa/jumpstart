@@ -58,11 +58,13 @@ export async function decrementStock(
         throw new Error(`Insufficient stock for product: ${productId}`);
       }
       const updatedSold = product.sold + quantity;
+      console.log("Updated sold for" + product.name + ": " + updatedSold);
       // Update the product's stock
-      await tx.product.update({
+      const datas = await tx.product.update({
         where: { id: product.id },
-        data: { stock: newProductStock, sold: updatedSold },
+        data: { stock: newProductStock, sold: product.sold + quantity },
       });
+      console.log("data", datas);
     });
 
     console.log(`Stocks updated successfully for ${productId}`);
@@ -96,6 +98,9 @@ export async function getOrders() {
           },
         },
         user: true,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
     return orders;
@@ -265,6 +270,7 @@ export async function getBestSellerItem() {
       ...item,
       totalQuantity: Number(item.totalQuantity),
     }));
+
     return formattedItems;
   } catch (error) {
     console.error(error);
@@ -709,4 +715,22 @@ export async function getProductById(id: string) {
   } finally {
     await prismadb.$disconnect();
   }
+}
+export async function getListOfBestSelling() {
+  // const bestSellingProducts = await prismadb.product.aggregate({
+  //   take: 12,
+  //   _sum:{
+  //   }
+  //   select: {
+  //     name: true,
+  //     description: true,
+  //     price: true,
+  //     // Add other fields you want to include here.
+  //     orderItem: {
+  //       _sum: {
+  //         quantity: true, // Include the sum of quantity for each product
+  //       },
+  //     },
+  //   },
+  // });
 }

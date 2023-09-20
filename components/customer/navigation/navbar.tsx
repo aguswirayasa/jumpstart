@@ -85,8 +85,8 @@ const Navbar = ({ categories }: NavbarProps) => {
                 </Link>
                 <div className="flex gap-3 items-center">
                   <ProfileNav
-                    avatar={avatarUrl}
-                    name={name}
+                    avatar={avatarUrl || user.image}
+                    name={name || user.name}
                     email={user?.email || ""}
                   />
                 </div>

@@ -25,9 +25,23 @@ export async function POST(req: Request) {
 
   const session = event.data.object as Stripe.Checkout.Session;
 
-  const shippingAddress: Address = JSON.parse(
-    session?.metadata?.shippingAddress || ""
-  );
+  const shippingAddressJson = session?.metadata?.shippingAddress || "";
+
+  let shippingAddress: Address = {
+    street: "",
+    state: "",
+    city: "",
+    country: "",
+    postalCode: "",
+  };
+
+  if (shippingAddressJson) {
+    try {
+      shippingAddress = JSON.parse(shippingAddressJson);
+    } catch (error) {
+      console.error("Error parsing shipping address JSON:", error);
+    }
+  }
 
   const addressComponents = [
     shippingAddress.street,

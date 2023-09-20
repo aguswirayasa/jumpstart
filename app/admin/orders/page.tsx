@@ -28,7 +28,7 @@ const page = async () => {
       customerName: item.user?.firstName + " " + item.user?.lastName,
       phoneNumber: item.phone,
       status: item.isPaid ? "Completed" : "Unpaid",
-      totalPrice: "$" + item.totalPrice,
+      totalPrice: "$" + item.totalPrice.toLocaleString("en-US"),
       products: products,
       createdAt: format(item.createdAt, "MMMM do, yyyy"),
     };

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { ToastProvider } from "@/providers/ToastProvider";
+import ProgressBarProviders from "@/providers/ProgressBarProvider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 

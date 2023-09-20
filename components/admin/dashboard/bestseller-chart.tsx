@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import Link from "next/link";
 import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -18,6 +19,7 @@ interface BestSellerChartProps {
   dataPoints: dataPoints[];
 }
 const BestSellerChart = ({ dataPoints }: BestSellerChartProps) => {
+  console.log(dataPoints);
   const quantities = dataPoints.map((item) => item.totalQuantity);
   const namesWithFirstTwoWords = dataPoints.map((item) => {
     const words = item.name.split(" ");
@@ -74,7 +76,9 @@ const BestSellerChart = ({ dataPoints }: BestSellerChartProps) => {
           ],
         }}
       />
-      <Button variant={"outline"}>View More</Button>
+      <Link href={"/admin/products"}>
+        <Button variant={"outline"}>View More</Button>
+      </Link>
     </Card>
   );
 };

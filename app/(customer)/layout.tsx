@@ -5,6 +5,7 @@ import Navbar from "@/components/customer/navigation/navbar";
 import CartProviders from "@/providers/CartProvider";
 import Footer from "@/components/customer/navigation/footer";
 import prismadb from "@/lib/prismadb";
+import ProgressBarProviders from "@/providers/ProgressBarProvider";
 const CustomerLayout = async ({ children }: { children: React.ReactNode }) => {
   async function getCategories() {
     "use server";
@@ -27,11 +28,13 @@ const CustomerLayout = async ({ children }: { children: React.ReactNode }) => {
   const email = session?.user.email;
   return (
     <CartProviders email={email || "no-login"}>
-      <div className="h-screen">
-        <Navbar categories={categories!} />
-        <main className=" w-full">{children}</main>
-        <Footer />
-      </div>
+      <ProgressBarProviders>
+        <div className="h-screen">
+          <Navbar categories={categories!} />
+          <main className=" w-full">{children}</main>
+          <Footer />
+        </div>
+      </ProgressBarProviders>
     </CartProviders>
   );
 };

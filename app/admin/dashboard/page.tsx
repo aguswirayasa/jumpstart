@@ -35,7 +35,7 @@ const page = async () => {
           <div className="col-span-2">
             <h1 className="text-2xl font-bold text-white">Total Sales</h1>
             <p className="text-sm text-white">
-              ${statistics.totalSales.toFixed(1)}
+              ${statistics.totalSales.toLocaleString("en-US")}
             </p>
           </div>
         </Card>
