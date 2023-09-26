@@ -1,20 +1,17 @@
 import AddToCart from "@/components/customer/home/add-to-cart";
 import ProductGallery from "@/components/product-gallery/gallery";
 import prismadb from "@/lib/prismadb";
-import { Product } from "@/types";
 import Image from "next/image";
 import React from "react";
 import { AiTwotoneStar } from "react-icons/ai";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import Review from "@/components/customer/home/review";
 import CustomIcon from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getServerSession } from "next-auth";
 import { isInWishlist } from "@/lib/server-utils";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Star } from "lucide-react";
 
 async function getProductDetails(id: string) {
   try {
@@ -49,7 +46,7 @@ async function getProductDetails(id: string) {
   }
 }
 
-const page = async ({ params }: { params: { id: string } }) => {
+const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
   const product = await getProductDetails(params.id);
   const session = await getServerSession();
   const wished = await isInWishlist(params.id, session?.user.email || "");
@@ -103,10 +100,12 @@ const page = async ({ params }: { params: { id: string } }) => {
             </h1>
             <span className="flex gap-3">
               <span className="text-gray-500">
-                <b className="text-primary">5.0</b> ratings
+                <b className="text-primary">{averageRating.toFixed(1)}</b>{" "}
+                ratings
               </span>
               <span className="text-gray-500">
-                <b className="text-primary">5.000</b> reviews
+                <b className="text-primary">{product?.reviews.length || 0}</b>{" "}
+                reviews
               </span>
             </span>
             <p className="text-lg font-bold md:text-3xl text-primary ">
@@ -244,4 +243,4 @@ const page = async ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default page;
+export default ProductDetailPage;

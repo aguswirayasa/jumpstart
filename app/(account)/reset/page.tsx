@@ -3,7 +3,7 @@ import ResetPasswordForm from "@/components/account/reset-password-form";
 import Image from "next/image";
 import Link from "next/link";
 
-const page = () => {
+const ForgotPasswordPage = () => {
   return (
     <div className="grid place-items-center p-10 max-w-xl mx-auto">
       <div className="space-y-3">
@@ -24,4 +24,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ForgotPasswordPage;

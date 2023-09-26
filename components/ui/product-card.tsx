@@ -43,7 +43,11 @@ const ProductCard = (props: ProductCardProps) => {
         </span>
         <div className="flex justify-between items-center flex-wrap">
           <p className="font-bold text-base">${props.price}</p>
-          {props.sold && <Badge>{props.sold} sold</Badge>}
+          {props.sold && props.sold > 0 ? (
+            <Badge>{props.sold} sold</Badge>
+          ) : (
+            <Badge>NEW</Badge>
+          )}
         </div>
       </CardFooter>
     </Card>

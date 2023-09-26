@@ -2,27 +2,27 @@
 import React from "react";
 import { FaLocationDot, FaBoxesStacked } from "react-icons/fa6";
 import { BsFillSuitHeartFill } from "react-icons/bs";
+import { PenSquareIcon, Plus } from "lucide-react";
+import Image from "next/image";
+import { getServerSession } from "next-auth";
+import { format } from "date-fns";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import CustomIcon from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
-import { PenSquareIcon, Pencil, Plus, Trash2 } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
 import { UpdateProfileModal } from "@/components/modal/update-profile-modal";
 import { getProfile, getShippingAddress } from "@/lib/server-utils";
 import { Address, Profile } from "@/types";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { format } from "date-fns";
 import { AddressModal } from "@/components/modal/add-address-modal";
-import Link from "next/link";
 import { AddImageModal } from "@/components/modal/add-image-modal";
 import { DeleteAddressModal } from "@/components/modal/delete-address-modal";
 
-const page = async () => {
+const ProfilePage = async () => {
   const session = await getServerSession();
   const email = session?.user.email;
   if (!session) {
@@ -46,9 +46,15 @@ const page = async () => {
           <Card className="flex flex-col p-5">
             <div className="flex items-center gap-3">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={"/default-avatar.jpg"} about="avatar" />
+                <AvatarImage
+                  src={profile.avatar || "/default-avatar.jpg"}
+                  about="avatar"
+                />
               </Avatar>
-              <p className="text-lg font-semibold">Kingz</p>
+              <p className="text-lg font-semibold">
+                {" "}
+                {profile.firstName + " " + profile.lastName}
+              </p>
             </div>
             <Separator className="my-3" />
             <div>
@@ -208,4 +214,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ProfilePage;

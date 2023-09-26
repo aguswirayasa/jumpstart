@@ -1,12 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import CustomIcon from "@/components/ui/icons";
 import React from "react";
 import { AiOutlineMail } from "react-icons/ai";
 import { FaFax } from "react-icons/fa";
 import { RiCustomerService2Fill } from "react-icons/ri";
 
-const page = () => {
+import CustomIcon from "@/components/ui/icons";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+const ContactUsPage = () => {
   return (
     <div className="min-h-screen">
       <div className="bg-primary grid place-items-center place-content-center text-center gap-3 min-h-[400px]">
@@ -84,4 +85,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ContactUsPage;

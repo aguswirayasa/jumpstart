@@ -3,7 +3,7 @@ import CartShipping from "@/components/customer/cart/cart-shipping";
 import CartSummary from "@/components/customer/cart/cart-summary";
 import React from "react";
 
-const page = () => {
+const CheckoutPage = () => {
   return (
     <div className="m-10 md:mx-40">
       <h1 className="text-2xl md:text-3xl font-bold my-5 ">Shopping Cart</h1>
@@ -21,4 +21,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default CheckoutPage;

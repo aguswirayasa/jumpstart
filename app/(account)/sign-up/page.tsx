@@ -1,6 +1,6 @@
 import RegistrationForm from "@/components/customer/sign-up/register-form";
 
-const page = () => {
+const SignUpPage = () => {
   return (
     <div className="grid place-items-center p-10">
       <RegistrationForm />
@@ -8,4 +8,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SignUpPage;

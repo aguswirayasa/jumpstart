@@ -82,11 +82,6 @@ export async function POST(
       (newSpec) =>
         !existingProduct.specifications.find((spec) => spec.id === newSpec.id)
     );
-
-    console.log("Added specifications", newSpecifications);
-    console.log("Removed specifications", removedSpecificationIds);
-    console.log("Removed Images", removedImageIds);
-    console.log("newly added images", newImages);
     // Update the product in the database
     const result = await prismadb.product.update({
       where: { id: productId },
@@ -113,8 +108,6 @@ export async function POST(
         },
       },
     });
-    console.log("PRODUCT UPDATED");
-    console.log(result);
     return NextResponse.json({ message: "Product updated" }, { status: 200 });
   } catch (error) {
     console.error(error);

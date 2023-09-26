@@ -3,7 +3,7 @@ import { CustomerClient } from "@/components/admin/email/table/table-client";
 import { getCustomer } from "@/lib/server-utils";
 import React from "react";
 
-const page = async () => {
+const MailsPage = async () => {
   const customers = await getCustomer();
   const formattedCustomers: CustomerColumn[] = customers!.map((item) => ({
     id: item.id,
@@ -19,4 +19,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default MailsPage;

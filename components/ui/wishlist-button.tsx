@@ -18,6 +18,7 @@ interface WishlistButtonProps {
   onClick: () => void;
   isLoading?: boolean;
   isWished?: boolean;
+  isLogin: boolean;
 }
 
 const WishlistButton = ({
@@ -27,9 +28,10 @@ const WishlistButton = ({
   onClick,
   isLoading,
   isWished,
+  isLogin,
 }: WishlistButtonProps) => {
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger>
           {" "}
@@ -56,7 +58,11 @@ const WishlistButton = ({
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Add to wishlist</p>
+          <p>
+            {isLogin
+              ? "Add or remove wishlist"
+              : "You need to login to use this feauture"}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -19,7 +19,6 @@ interface BestSellerChartProps {
   dataPoints: dataPoints[];
 }
 const BestSellerChart = ({ dataPoints }: BestSellerChartProps) => {
-  console.log(dataPoints);
   const quantities = dataPoints.map((item) => item.totalQuantity);
   const namesWithFirstTwoWords = dataPoints.map((item) => {
     const words = item.name.split(" ");

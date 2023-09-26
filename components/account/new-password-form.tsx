@@ -15,11 +15,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import { format } from "path";
 
 const formSchema = z
   .object({
@@ -31,7 +29,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const ResetPasswordForm = () => {
+const NewPasswordForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("id");
@@ -135,4 +133,4 @@ const ResetPasswordForm = () => {
   );
 };
 
-export default ResetPasswordForm;
+export default NewPasswordForm;

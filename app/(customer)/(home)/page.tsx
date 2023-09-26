@@ -2,11 +2,8 @@ import AutoPlayCarousel from "@/components/customer/home/auto-play-carousel";
 import SpecialOfferCarousel from "@/components/customer/home/special-offer-carousel";
 import { Separator } from "@/components/ui/separator";
 import Categories from "@/components/customer/home/categories";
-import prismadb from "@/lib/prismadb";
 import {
   getAllActiveBanners,
-  getAllProducts,
-  getBestSellerItem,
   getCategories,
   getListOfBestSelling,
   getNewProducts,

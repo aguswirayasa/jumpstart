@@ -22,7 +22,7 @@ export const columns: ColumnDef<BannersColumn>[] = [
           width={300}
           height={150}
           alt=""
-          loading="lazy"
+          loading="eager"
           className=" object-contain h-[110px]"
         />
       </div>

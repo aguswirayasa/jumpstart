@@ -1,10 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import NewPasswordForm from "@/components/account/new-password-form";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
-const page = () => {
+const ResetPasswordPage = () => {
   return (
     <div className="grid place-items-center p-10 max-w-xl mx-auto">
       <div className="space-y-3">
@@ -20,4 +18,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ResetPasswordPage;

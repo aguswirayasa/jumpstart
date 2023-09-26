@@ -137,6 +137,7 @@ const UpdateProductForm = ({
       onSuccess: () => {
         queryClient.invalidateQueries("products");
         router.push("/admin/products");
+        router.refresh();
       },
     }
   );
@@ -462,7 +463,7 @@ const UpdateProductForm = ({
             {addProductMutation.isLoading ? (
               <>
                 <Loader2 className="animate-spin" />
-                <p>Upddating product...</p>
+                <p>Updating product...</p>
               </>
             ) : (
               "Update Product"

@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import "./search.css";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import CustomIcon from "@/components/ui/icons";
 import ProductCard from "@/components/ui/product-card";
@@ -126,7 +125,7 @@ const SearchPage = () => {
               </>
             ) : (
               <>
-                {products.length === 0 ? (
+                {products?.length === 0 || !products ? (
                   <div className="col-span-4 flex justify-center items-center">
                     <div className="max-w-lg flex flex-col items-center space-x-3">
                       <h2 className="text-center text-primary font-bold text-3xl">
@@ -138,12 +137,9 @@ const SearchPage = () => {
                     </div>
                   </div>
                 ) : (
-                  products.map((item) => (
+                  products?.map((item, index) => (
                     <>
-                      <div
-                        className="col-span-2 md:col-span-1"
-                        key={item.product.id}
-                      >
+                      <div className="col-span-2 md:col-span-1" key={index}>
                         <ProductCard
                           id={item.product.id}
                           name={item.product.name}

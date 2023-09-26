@@ -7,9 +7,6 @@ export async function POST(
 ) {
   const { variants, stock } = await request.json();
   const productId = params?.productId || "";
-  console.log("id", params.productId);
-  console.log("variant", variants);
-  console.log("stock", stock);
   const convertedStock = Number(stock);
   try {
     // Update the product stock

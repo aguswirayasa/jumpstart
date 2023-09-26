@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
 
-const page = () => {
+const TermsAndConditionsPage = () => {
   return (
     <div className="m-10 md:m-36">
       <h1 className="font-black text-primary text-3xl md:text-6xl my-5">
@@ -302,4 +302,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default TermsAndConditionsPage;

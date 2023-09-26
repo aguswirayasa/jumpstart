@@ -27,9 +27,6 @@ export async function POST(
 
   const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-  console.log("newPassword: " + newPassword);
-  console.log("hashedPassword: " + hashedPassword);
-
   try {
     await prismadb.users.update({
       where: {

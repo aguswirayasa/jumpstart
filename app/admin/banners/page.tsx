@@ -3,7 +3,7 @@ import React from "react";
 import { getAllBanners } from "@/lib/server-utils";
 import { BannersClient } from "@/components/admin/banners/table/table-client";
 
-const page = async () => {
+const ManageBannersPage = async () => {
   const banners = await getAllBanners();
 
   return (
@@ -15,4 +15,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ManageBannersPage;

@@ -18,15 +18,20 @@ interface ProfileNavProps {
   name: string;
   avatar: string;
   email: string;
+  isLoading: boolean;
 }
 
-const ProfileNav = ({ name, avatar, email }: ProfileNavProps) => {
+const ProfileNav = ({ name, avatar, email, isLoading }: ProfileNavProps) => {
   return (
     <HoverCard>
       <HoverCardTrigger className="cursor-pointer">
-        <Avatar>
-          <AvatarImage src={avatar || "/default-avatar.jpg"} about="avatar" />
-        </Avatar>
+        {isLoading ? (
+          <div className="w-[40px] h-[40px] bg-gray-300 animate-pulse rounded-full"></div>
+        ) : (
+          <Avatar>
+            <AvatarImage src={avatar || "/default-avatar.jpg"} about="avatar" />
+          </Avatar>
+        )}
       </HoverCardTrigger>
       <HoverCardContent className="w-fit me-10 ">
         <div className="p-3">

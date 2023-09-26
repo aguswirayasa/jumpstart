@@ -1,12 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { GoogleLoginButton } from "react-social-login-buttons";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
-import { Montserrat } from "next/font/google";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
 const formSchema = z.object({
@@ -32,10 +28,7 @@ const formSchema = z.object({
 });
 
 const ResetPasswordForm = () => {
-  const auth = useSession();
-  const user = auth.data?.user;
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

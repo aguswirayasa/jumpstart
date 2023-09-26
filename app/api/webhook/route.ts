@@ -72,6 +72,11 @@ export async function POST(req: Request) {
         });
 
         for (const orderItem of orderItems) {
+          console.log(
+            "orderItem: " + orderItem.productId,
+            orderItem.product,
+            orderItem.quantity
+          );
           await decrementStock(
             orderItem.productId,
             orderItem.variantName,

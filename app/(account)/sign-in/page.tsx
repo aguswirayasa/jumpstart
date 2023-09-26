@@ -1,7 +1,6 @@
 import LoginForm from "@/components/account/login-form";
-import AuthFooter from "@/components/ui/auth-footer";
 
-const page = () => {
+const SignInPage = () => {
   return (
     <div className="grid place-items-center relative p-10">
       <LoginForm />
@@ -9,4 +8,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SignInPage;

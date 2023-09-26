@@ -7,55 +7,61 @@ export async function GET(
   { params }: { params: { token: string } }
 ) {
   const { token } = params;
-  const user = await prismadb.users.findFirst({
-    where: {
-      ActivateToken: {
-        some: {
-          AND: {
-            activatedAt: null,
-            createdAt: {
-              gt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-            },
-            token,
-          },
-        },
-      },
-    },
-  });
-  if (!user) {
-    const isUserActive = await prismadb.users.findFirst({
+  try {
+    const user = await prismadb.users.findFirst({
       where: {
-        active: true, // Only retrieve active users
         ActivateToken: {
           some: {
-            token: token,
+            AND: {
+              activatedAt: null,
+              createdAt: {
+                gt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+              },
+              token,
+            },
           },
         },
       },
     });
-    if (isUserActive) {
-      redirect("/sign-in?verificationSuccess=true");
+    if (!user) {
+      const isUserActive = await prismadb.users.findFirst({
+        where: {
+          active: true, // Only retrieve active users
+          ActivateToken: {
+            some: {
+              token: token,
+            },
+          },
+        },
+      });
+      if (isUserActive) {
+        redirect("/sign-in?verificationSuccess=true");
+      }
+
+      redirect(
+        `/expired-token?expired=true&token=${encodeURIComponent(token)}`
+      );
     }
+    await prismadb.users.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        active: true,
+      },
+    });
 
-    redirect(`/expired-token?expired=true&token=${encodeURIComponent(token)}`);
+    await prismadb.activateToken.update({
+      where: {
+        token,
+      },
+      data: {
+        activatedAt: new Date(),
+      },
+    });
+
+    redirect("/sign-in?verificationSuccess=true");
+  } catch (error) {
+    console.log(error);
   }
-  await prismadb.users.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      active: true,
-    },
-  });
-
-  await prismadb.activateToken.update({
-    where: {
-      token,
-    },
-    data: {
-      activatedAt: new Date(),
-    },
-  });
-
-  redirect("/sign-in?verificationSuccess=true");
 }

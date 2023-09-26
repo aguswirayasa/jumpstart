@@ -4,6 +4,7 @@ import { CartDetails } from "use-shopping-cart/core";
 import { stripe } from "@/lib/stripe";
 import { getServerSession } from "next-auth";
 import { Address } from "@/types";
+import { isStockAvailable } from "@/lib/server-utils";
 
 type OrderData = { productId: any; quantity: number; variantName: string };
 interface CheckoutRequest {
@@ -33,7 +34,19 @@ export async function POST(request: NextRequest) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  Object.entries(cartDetails).map(([itemId, itemDetail]) => {
+  for (const [itemId, itemDetail] of Object.entries(cartDetails)) {
+    const stockAvailable = await isStockAvailable(
+      itemDetail.sku,
+      itemDetail.quantity,
+      itemDetail.id
+    );
+    if (!stockAvailable) {
+      // Return a 400 response when stock is not enough.
+      return NextResponse.json(
+        { message: "Stock not available" },
+        { status: 400 }
+      );
+    }
     orderData.push({
       productId: itemDetail.sku,
       quantity: itemDetail.quantity,
@@ -54,7 +67,7 @@ export async function POST(request: NextRequest) {
         unit_amount: itemDetail.price,
       },
     });
-  });
+  }
 
   const session = await stripe.checkout.sessions.create({
     line_items,

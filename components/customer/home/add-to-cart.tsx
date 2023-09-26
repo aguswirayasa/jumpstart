@@ -15,6 +15,12 @@ import WishlistButton from "@/components/ui/wishlist-button";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { useWishlistStore } from "@/lib/store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AddToCartProps {
   stock: number;
@@ -39,10 +45,8 @@ const AddToCart = ({
 }: AddToCartProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [subtotal, setSubtotal] = useState<number>(price);
-  const [variants, setVariants] = useState(variantOptions[0]?.name || "");
-  const [selected, setSelected] = useState(
-    variantOptions[0]?.name + "" + 0 || ""
-  );
+  const [variants, setVariants] = useState("");
+  const [selected, setSelected] = useState("");
 
   const checkout = userEmail ? "/cart" : "/sign-in";
   const isLogin = userEmail ? true : false;
@@ -62,6 +66,12 @@ const AddToCart = ({
     userEmail: userEmail || "",
     productId: id,
   };
+
+  useEffect(() => {
+    if (!variantOptions || variantOptions.length === 0) {
+      setSelected("selected");
+    }
+  }, []);
 
   const wishlistMutation = useMutation(
     async (data: wishlistRequest) => {
@@ -85,6 +95,7 @@ const AddToCart = ({
   );
   const addToCart = () => {
     addItem(product, { count: quantity });
+    setQuantity(1);
     toast.success("Item added to cart!");
   };
   const handleWishlist = (data: wishlistRequest) => {
@@ -141,7 +152,7 @@ const AddToCart = ({
                 setQuantity(parsedValue);
                 setSubtotal(() => price * parsedValue);
               } else {
-                // Handle invalid input, e.g., set quantity to 1
+                // Handle invalid input, e.g., set quantity to 1sss
                 setQuantity(1);
                 setSubtotal(() => price);
               }
@@ -171,13 +182,15 @@ const AddToCart = ({
         <div className="space-y-3">
           <div className="grid grid-cols-2 space-x-3">
             <AddToCartButton
+              isLogin={isLogin}
               onClick={addToCart}
               showText={true}
-              disable={variantStock === 0 || !isLogin}
+              disable={variantStock === 0 || !isLogin || !selected}
               classname="col-span-1"
             />
 
             <WishlistButton
+              isLogin={isLogin}
               showText={true}
               disable={
                 variantStock === 0 || wishlistMutation.isLoading || !isLogin
@@ -188,19 +201,31 @@ const AddToCart = ({
               classname="col-span-1"
             />
           </div>
-
-          <Button
-            className="space-x-3 bg-yellow-500 w-full select-none"
-            disabled={variantStock === 0 || !isLogin}
-          >
-            {variantStock === 0 ? (
-              <p className="font-bold">Sold Out</p>
-            ) : (
-              <Link href={checkout}>
-                <p className="font-bold">Checkout</p>
-              </Link>
-            )}
-          </Button>
+          <TooltipProvider delayDuration={100}>
+            <Tooltip>
+              <TooltipTrigger className="w-full">
+                <Button
+                  className="space-x-3 bg-yellow-500 w-full select-none"
+                  disabled={variantStock === 0 || !isLogin}
+                >
+                  {variantStock === 0 ? (
+                    <p className="font-bold">Sold Out</p>
+                  ) : (
+                    <Link href={checkout}>
+                      <p className="font-bold">Checkout</p>
+                    </Link>
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {isLogin
+                    ? "Proceed to checkout"
+                    : "You need to login to use this feauture"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </div>

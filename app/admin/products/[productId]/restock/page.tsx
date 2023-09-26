@@ -6,7 +6,6 @@ const RestockProductPage = async ({
 }: {
   params: { productId: string };
 }) => {
-  const categories = await getCategories();
   const products = await getProductById(params.productId);
 
   return (

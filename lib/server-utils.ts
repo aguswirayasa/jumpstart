@@ -1,6 +1,5 @@
 import { Address } from "@/types";
 import prismadb from "./prismadb";
-import { error } from "console";
 
 export async function decrementStock(
   productId: string,
@@ -8,67 +7,69 @@ export async function decrementStock(
   quantity: number
 ) {
   try {
-    await prismadb.$transaction(async (tx) => {
-      // Find the product by name
-      const product = await tx.product.findUnique({
-        where: { id: productId },
-        include: {
-          variantOption: true,
+    console.log({ productId, variantName, quantity });
+    // Find the product by name
+    const product = await prismadb.product.findUnique({
+      where: { id: productId },
+      include: {
+        variantOption: true,
+      },
+    });
+
+    if (!product) {
+      throw new Error(`Product not found: ${productId}`);
+    }
+
+    // Check if the product has variants
+    if (product.variantOption.length > 0) {
+      // Find the variant option by name and associated with the product
+      const variantOption = await prismadb.variantOption.findFirst({
+        where: {
+          name: variantName,
+          productId: product.id,
         },
       });
 
-      if (!product) {
-        throw new Error(`Product not found: ${productId}`);
+      if (!variantOption) {
+        throw new Error(`Variant option not found: ${variantName}`);
       }
 
-      // Check if the product has variants
-      if (product.variantOption.length > 0) {
-        // Find the variant option by name and associated with the product
-        const variantOption = await tx.variantOption.findFirst({
-          where: {
-            name: variantName,
-            productId: product.id,
-          },
-        });
+      // Calculate the new stock for the variant option
+      const newVariantStock = variantOption.stock - quantity;
 
-        if (!variantOption) {
-          throw new Error(`Variant option not found: ${variantName}`);
-        }
-
-        // Calculate the new stock for the variant option
-        const newVariantStock = variantOption.stock - quantity;
-
-        if (newVariantStock < 0) {
-          throw new Error(
-            `Insufficient stock for variant option: ${variantName}`
-          );
-        }
-
-        // Update the variant option's stock
-        await tx.variantOption.update({
-          where: { id: variantOption.id },
-          data: { stock: newVariantStock },
-        });
+      if (newVariantStock < 0) {
+        throw new Error(
+          `Insufficient stock for variant option: ${variantName}`
+        );
       }
+      console.log("varian option" + variantOption);
+      console.log("varian option new quntity" + newVariantStock);
 
-      // Calculate the new stock for the product
-      const newProductStock = product.stock - quantity;
-
-      if (newProductStock < 0) {
-        throw new Error(`Insufficient stock for product: ${productId}`);
-      }
-      const updatedSold = product.sold + quantity;
-      console.log("Updated sold for" + product.name + ": " + updatedSold);
-      // Update the product's stock
-      const datas = await tx.product.update({
-        where: { id: product.id },
-        data: { stock: newProductStock, sold: product.sold + quantity },
+      // Update the variant option's stock
+      await prismadb.variantOption.update({
+        where: { id: variantOption.id },
+        data: { stock: newVariantStock },
       });
-      console.log("data", datas);
+    }
+
+    // Calculate the new stock for the product
+    const newProductStock = product.stock - quantity;
+
+    if (newProductStock < 0) {
+      throw new Error(`Insufficient stock for product: ${productId}`);
+    }
+    const updatedSold = product.sold + quantity;
+    console.log("Updated sold for" + product.name + ": " + updatedSold);
+    // Update the product's stock
+    const datas = await prismadb.product.update({
+      where: { id: product.id },
+      data: { stock: newProductStock, sold: product.sold + quantity },
     });
+    console.log("data", datas);
 
     console.log(`Stocks updated successfully for ${productId}`);
   } catch (error: any) {
+    console.log(error);
     console.error(`Error updating stocks: ${error.message}`);
   } finally {
     await prismadb.$disconnect();
@@ -78,7 +79,11 @@ export async function decrementStock(
 export async function getCategories() {
   "use server";
   try {
-    const categories = await prismadb.category.findMany();
+    const categories = await prismadb.category.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
     return categories;
   } catch (error) {
     console.log(error);
@@ -293,14 +298,25 @@ export async function getStatistics() {
     });
 
     // Fetch total number of orders
-    const totalOrders = await prismadb.orders.count();
+    const totalPendingOrders = await prismadb.orders.count({
+      where: {
+        status: "PROCESSING",
+      },
+    });
+    const totalCompleteOrders = await prismadb.orders.count({
+      where: {
+        status: "COMPLETED",
+      },
+    });
 
     // Fetch total number of products
     const totalProducts = await prismadb.product.count();
 
     return {
       totalSales: totalSales._sum.amount || 0,
-      totalOrders,
+      totalPendingOrders,
+      totalCompleteOrders,
+
       totalProducts,
     };
   } catch (error) {
@@ -819,5 +835,59 @@ export async function getNewProducts() {
     return [];
   } finally {
     prismadb.$disconnect();
+  }
+}
+
+export async function isStockAvailable(
+  productId: string,
+  quantity: number,
+  variantId: string
+) {
+  console.log({ productId, quantity, variantId });
+  try {
+    if (!variantId.includes("true")) {
+      const product = await prismadb.variantOption.findFirst({
+        where: {
+          name: variantId,
+          AND: {
+            productId,
+          },
+        },
+        select: { stock: true },
+      });
+      console.log(product, quantity);
+      console.log(product && product.stock >= quantity);
+      return product && product.stock >= quantity;
+    } else {
+      const product = await prismadb.product.findUnique({
+        where: {
+          id: productId,
+        },
+        select: {
+          stock: true,
+        },
+      });
+      console.log(product, quantity);
+      console.log(product && product.stock >= quantity);
+      return product && product.stock >= quantity;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+export async function getSomeCategories() {
+  "use server";
+  try {
+    const categories = await prismadb.category.findMany({
+      take: 10,
+      select: {
+        name: true,
+      },
+    });
+    return categories;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prismadb.$disconnect();
   }
 }

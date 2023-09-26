@@ -5,7 +5,7 @@ import { ProductColumn } from "@/components/admin/products/table/columns";
 import { ProductsClient } from "@/components/admin/products/table/table-client";
 import prismadb from "@/lib/prismadb";
 
-const page = async () => {
+const ManageProductPage = async () => {
   async function getAllProduct() {
     "use server";
     try {
@@ -16,6 +16,9 @@ const page = async () => {
               name: true,
             },
           },
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
       return products;
@@ -33,6 +36,7 @@ const page = async () => {
     stock: item.stock,
     category: item.category.name,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    thumbnail: item.thumbnail,
   }));
 
   return (
@@ -44,4 +48,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ManageProductPage;

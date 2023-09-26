@@ -52,6 +52,7 @@ const RestockForm = ({
       onSuccess: () => {
         queryClient.invalidateQueries("update");
         router.push("/admin/products");
+        router.refresh();
       },
       onError: () => {
         toast.error("Something went wrong, please try again");
@@ -60,6 +61,20 @@ const RestockForm = ({
   );
 
   const onSubmit = async () => {
+    if (variants.length > 0) {
+      const variantsStockSum = variants.reduce(
+        (total, variant) => total + variant.stock,
+        0
+      );
+
+      // Check if the sum matches the stock value
+      if (variantsStockSum !== stock) {
+        toast.error(
+          "The sum of variant stocks does not match the total stock."
+        );
+        return; // Prevent the mutation from executing
+      }
+    }
     restocktMutation.mutate();
   };
   return (
@@ -93,7 +108,13 @@ const RestockForm = ({
               value={variant.stock.toString()} // Convert stock to string for input value
               onChange={(e) => {
                 const updatedVariants = [...variants];
-                updatedVariants[index].stock = parseInt(e.target.value);
+                const parsedValue = parseInt(e.target.value);
+                if (!isNaN(parsedValue) && parsedValue >= 1) {
+                  updatedVariants[index].stock = parsedValue;
+                } else {
+                  updatedVariants[index].stock = 1;
+                }
+
                 setVariants(updatedVariants);
               }}
               className="col-span-1 "

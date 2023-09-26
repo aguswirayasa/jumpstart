@@ -1,11 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import Image from "next/image";
+
 import { BiSolidMedal } from "react-icons/bi";
 import { HiUserGroup } from "react-icons/hi";
 import { RiCommunityFill } from "react-icons/ri";
 import { BsLightbulbFill } from "react-icons/bs";
-
 import CustomIcon from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
 

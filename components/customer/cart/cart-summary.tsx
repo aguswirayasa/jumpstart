@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useHydration } from "@/hooks/useHydration";
-import { useCheckoutStore } from "@/lib/store";
+import { useCheckoutStore, useProfileStore } from "@/lib/store";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useShoppingCart } from "use-shopping-cart";
@@ -15,8 +17,13 @@ const CartSummary = () => {
     useShoppingCart();
   const [isLoading, setIsLoading] = useState(false);
   const isMounted = useHydration();
+  const session = useSession();
+  const user = session.data?.user;
   const searchParams = useSearchParams();
   const { address } = useCheckoutStore();
+  const router = useRouter();
+  const setAvatar = useProfileStore((state) => state.setAvatarUrl);
+  const setName = useProfileStore((state) => state.setName);
 
   const handleCheckout = async () => {
     setIsLoading(true);
@@ -28,11 +35,18 @@ const CartSummary = () => {
       });
       if (response.status === 200) {
         window.location = response.data.url;
+      } else if (response.status === 400) {
+        toast.error("Stock not available, please check the product you order");
       } else {
         toast.error("Something went wrong");
       }
-    } catch (error) {
-      toast.error("Something went wrong");
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.status === 400) {
+        toast.error("Stock not available, please check the product you order");
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setIsLoading(false);
     }

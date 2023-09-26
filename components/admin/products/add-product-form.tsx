@@ -151,6 +151,23 @@ const AddProductForm = ({ categories }: { categories: Categories[] }) => {
   };
 
   const onSubmit = async (data: Product) => {
+    // Calculate the sum of stock in variants
+
+    if (variants.length > 0) {
+      const variantsStockSum = variants.reduce(
+        (total, variant) => total + variant.stock,
+        0
+      );
+
+      // Check if the sum matches the stock value
+      if (variantsStockSum !== Number(form.getValues("stock"))) {
+        toast.error(
+          "The sum of variant stocks does not match the total stock."
+        );
+        return; // Prevent the mutation from executing
+      }
+    }
+
     addProductMutation.mutate(data);
   };
 

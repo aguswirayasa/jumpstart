@@ -1,11 +1,11 @@
-import { OrdersColumn } from "@/components/admin/orders/table/columns";
-import { OrdersClient } from "@/components/admin/orders/table/table-client";
-import { getOrders } from "@/lib/server-utils";
-import { Item } from "@radix-ui/react-accordion";
 import { format } from "date-fns";
 import React from "react";
 
-const page = async () => {
+import { OrdersColumn } from "@/components/admin/orders/table/columns";
+import { OrdersClient } from "@/components/admin/orders/table/table-client";
+import { getOrders } from "@/lib/server-utils";
+
+const ManageOrdersPage = async () => {
   const orders = await getOrders();
   const formattedOrders: OrdersColumn[] = orders!.map((item) => {
     const products = item.orderItems
@@ -36,8 +36,6 @@ const page = async () => {
         : "Not completed",
     };
   });
-
-  console.log();
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
@@ -47,4 +45,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ManageOrdersPage;

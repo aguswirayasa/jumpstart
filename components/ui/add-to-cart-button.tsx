@@ -15,6 +15,7 @@ interface AddToCartButtonProps {
   classname?: string;
   showText?: boolean;
   onClick: () => void;
+  isLogin: boolean;
 }
 
 const AddToCartButton = ({
@@ -22,9 +23,10 @@ const AddToCartButton = ({
   classname,
   showText,
   onClick,
+  isLogin,
 }: AddToCartButtonProps) => {
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger>
           {" "}
@@ -34,11 +36,13 @@ const AddToCartButton = ({
             onClick={() => onClick()}
           >
             <FaCartPlus />
-            {showText && <p className="font-semibold">Add to cart</p>}
+            {showText && <p className="font-semibold"> Add to cart</p>}
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Add to cart</p>
+          <p>
+            {isLogin ? "Add to cart" : "You need to login to use this feauture"}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

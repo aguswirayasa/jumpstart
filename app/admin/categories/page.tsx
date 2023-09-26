@@ -5,7 +5,7 @@ import { CategoriesClient } from "@/components/admin/categories/table/table-clie
 import { getCategories } from "@/lib/server-utils";
 import { CategoriesColumn } from "@/components/admin/categories/table/columns";
 
-const page = async () => {
+const ManageCategoriesPage = async () => {
   const categories = await getCategories();
   const formattedCategories: CategoriesColumn[] = categories!.map((item) => ({
     id: item.id,
@@ -22,4 +22,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ManageCategoriesPage;

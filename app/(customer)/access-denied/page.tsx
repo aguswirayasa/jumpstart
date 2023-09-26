@@ -1,7 +1,7 @@
 import AccessDenied from "@/components/access-denied";
 import React from "react";
 
-const page = () => {
+const AccessDeniedPage = () => {
   return (
     <div>
       <AccessDenied />
@@ -9,4 +9,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default AccessDeniedPage;

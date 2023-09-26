@@ -18,12 +18,14 @@ import CustomIcon from "@/components/ui/icons";
 import { useProfileStore } from "@/lib/store";
 import { ChevronDown, LogIn, Menu, ShoppingBag, UserPlus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import axios from "axios";
 
 interface NavbarProps {
   categories: { name: string }[];
+  email: string;
 }
 
-const Navbar = ({ categories }: NavbarProps) => {
+const Navbar = ({ categories, email }: NavbarProps) => {
   const isMounted = useHydration();
   const [search, setSearch] = React.useState("");
   const session = useSession();
@@ -33,11 +35,20 @@ const Navbar = ({ categories }: NavbarProps) => {
   const [showDropdown, setShowDropdown] = useState(true);
   const setAvatar = useProfileStore((state) => state.setAvatarUrl);
   const setName = useProfileStore((state) => state.setName);
+  const [isLoading, setIsLoading] = useState(false);
   const { avatarUrl, name } = useProfileStore();
   useEffect(() => {
-    setAvatar(user?.image || "");
-    setName(user?.name || "");
-  }, []);
+    console.log(email);
+    getUserInfo(email || "");
+  }, [avatarUrl, name]);
+  const getUserInfo = async (email: string) => {
+    setIsLoading(true);
+    const response = await axios.get(`/api/user/${email}/get-avatar`);
+    console.log("GET USER INFOR", response.data.result);
+    setAvatar(response?.data?.result?.avatar || "");
+    setName(response?.data?.result?.name || "");
+    setIsLoading(false);
+  };
   const handleSearch = (search: string) => {
     router.push(`/search?keyword=${search}`);
   };
@@ -72,6 +83,7 @@ const Navbar = ({ categories }: NavbarProps) => {
                 className=" focus:outline-none w-full border-2 border-gray-300 text-base text-black font-medium  px-10 py-1 rounded-lg outline-none"
                 placeholder="Search in Jumstart"
                 onChange={(e) => setSearch(e.target.value)}
+                required={true}
               />
               <button
                 className="absolute top-0 left-0 p-3 text-gray-500"
@@ -100,6 +112,7 @@ const Navbar = ({ categories }: NavbarProps) => {
                     avatar={avatarUrl || user.image}
                     name={name || user.name}
                     email={user?.email || ""}
+                    isLoading={isLoading}
                   />
                 </div>
               </div>
