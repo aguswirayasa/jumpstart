@@ -1,11 +1,11 @@
 import prismadb from "@/lib/prismadb";
-import { redirect } from "next/navigation";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { token: string } }
 ) {
+  const url = request.nextUrl.clone();
   const { token } = params;
   try {
     const user = await prismadb.users.findFirst({
@@ -34,13 +34,15 @@ export async function GET(
           },
         },
       });
-      if (isUserActive) {
-        redirect("/sign-in?verificationSuccess=true");
-      }
 
-      redirect(
-        `/expired-token?expired=true&token=${encodeURIComponent(token)}`
-      );
+      if (isUserActive) {
+        url.pathname = "/sign-in?verificationSuccess=true";
+        return NextResponse.redirect(url);
+      }
+      url.pathname = `/expired-token?expired=true&token=${encodeURIComponent(
+        token
+      )}`;
+      return NextResponse.redirect(url);
     }
     await prismadb.users.update({
       where: {
@@ -59,8 +61,8 @@ export async function GET(
         activatedAt: new Date(),
       },
     });
-
-    redirect("/sign-in?verificationSuccess=true");
+    url.pathname = "/sign-in?verificationSuccess=true";
+    return NextResponse.redirect(url);
   } catch (error) {
     console.log(error);
   }

@@ -1,9 +1,16 @@
 import CartItem from "@/components/customer/cart/cart-item";
 import CartShipping from "@/components/customer/cart/cart-shipping";
 import CartSummary from "@/components/customer/cart/cart-summary";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const CheckoutPage = () => {
+const CheckoutPage = async () => {
+  const session = await getServerSession();
+  const email = session?.user.email || "";
+  if (!session) {
+    redirect("/sign-in");
+  }
   return (
     <div className="m-10 md:mx-40">
       <h1 className="text-2xl md:text-3xl font-bold my-5 ">Shopping Cart</h1>

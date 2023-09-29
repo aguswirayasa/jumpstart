@@ -3,12 +3,15 @@ import React from "react";
 
 import { getWishlist } from "@/lib/server-utils";
 import WishlistCard from "@/components/ui/wishliat-card";
+import { redirect } from "next/navigation";
 
 const WishlistPage = async () => {
   const session = await getServerSession();
   const email = session?.user.email || "";
   const wishlist = await getWishlist(email);
-
+  if (!session) {
+    redirect("/sign-in");
+  }
   return (
     <div className="m-10 md:m-24 min-h-screen">
       <h1 className="font-black text-3xl text-primary">Wishlist</h1>

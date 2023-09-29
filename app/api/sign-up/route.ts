@@ -20,14 +20,9 @@ export async function POST(request: NextRequest) {
 
   if (existingUser) {
     // User with the email already exists, return a bad request response
-    return new NextResponse(
-      JSON.stringify({ error: "Email has already been used" }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    return NextResponse.json(
+      { error: "Email has already been used" },
+      { status: 400 }
     );
   }
 

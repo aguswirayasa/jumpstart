@@ -23,6 +23,7 @@ import { signIn } from "next-auth/react";
 import { Montserrat } from "next/font/google";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -56,18 +57,27 @@ const RegistrationForm = () => {
 
   const signupMutation = useMutation(
     async (formData: z.infer<typeof formSchema>) => {
-      // Simulate signup process
-      const response = await axios.post("/api/sign-up", formData);
+      try {
+        const response = await axios.post("/api/sign-up", formData);
 
-      if (response.data.id) {
-        router.push(`/verify-email?id=${response.data.id}`);
-        setSuccessMessage(response.data.message);
-      } else setErrorMessage(response.data.error);
+        console.log(response);
+        console.log(response.status);
+        if (response.data.id) {
+          router.push(`/verify-email?id=${response.data.id}`);
+          toast.success("Registration email has been to your email address");
+        }
+      } catch (error: any) {
+        if (error?.response?.status === 400) {
+          toast.error("Email has been used");
+        } else {
+          toast.error("Something went wrong,please try again");
+        }
+      }
     },
+
     {
       onSuccess: () => {
         // Invalidate and refetch data after successful mutation if needed
-
         queryClient.invalidateQueries("userData");
       },
     }

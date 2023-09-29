@@ -15,11 +15,15 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getUserOrderHistory } from "@/lib/server-utils";
+import { redirect } from "next/navigation";
 
 const OrderHistoryPage = async () => {
   const session = await getServerSession();
   const email = session?.user.email || "";
   const orderHistory = await getUserOrderHistory(email);
+  if (!session) {
+    redirect("/sign-in");
+  }
   return (
     <div className="max-w-none md:max-w-5xl  m-10 md:mx-auto  md:my-20 min-h-screen">
       <h1 className="font-black text-3xl text-primary">My Orders</h1>
