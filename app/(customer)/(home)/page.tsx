@@ -20,11 +20,13 @@ export default async function Home() {
       <AutoPlayCarousel images={images} />
       <div className="flex flex-col justify-center items-center mt-10 gap-3 ">
         <h2 className="text-2xl font-bold self-start ">New Arrival</h2>
+
         <SpecialOfferCarousel products={newArrival} />
       </div>
       <Separator className="my-8" />
       <div className="flex flex-col justify-center items-center  gap-3 ">
         <h2 className="text-2xl font-bold self-start ">Best Sellers</h2>
+
         <SpecialOfferCarousel products={bestSeller} />
       </div>
       <Separator className="my-8" />

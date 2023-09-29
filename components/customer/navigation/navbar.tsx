@@ -44,7 +44,6 @@ const Navbar = ({ categories, email }: NavbarProps) => {
   const getUserInfo = async (email: string) => {
     setIsLoading(true);
     const response = await axios.get(`/api/user/${email}/get-avatar`);
-    console.log("GET USER INFOR", response.data.result);
     setAvatar(response?.data?.result?.avatar || "");
     setName(response?.data?.result?.name || "");
     setIsLoading(false);
@@ -159,19 +158,22 @@ const Navbar = ({ categories, email }: NavbarProps) => {
             <>
               <li
                 className="flex gap-3 border-b border-gray-300 p-3 items-center hover:bg-black/10"
-                onClick={() => signIn()}
+                onClick={() => {
+                  signIn();
+                  setShow(false);
+                }}
               >
                 <LogIn /> Sign In
               </li>
 
-              <Link href={"/sign-up"}>
+              <Link href={"/sign-up"} onClick={() => setShow(false)}>
                 <li className="flex gap-3 border-b border-gray-300 p-3 items-center hover:bg-black/10">
                   <UserPlus /> Sign Up
                 </li>
               </Link>
             </>
           ) : (
-            <Link href={"/cart"}>
+            <Link href={"/cart"} onClick={() => setShow(false)}>
               <li className="flex gap-4 border-b border-gray-300 p-3 items-center hover:bg-black/10">
                 <GrCart /> Cart
               </li>
@@ -195,7 +197,11 @@ const Navbar = ({ categories, email }: NavbarProps) => {
             </span>
             <div className={`dropdown ${showDropdown ? "open" : ""}`}>
               {categories.slice(0, 5).map((category, index) => (
-                <Link href={`/search?keyword=${category.name}`} key={index}>
+                <Link
+                  href={`/search?keyword=${category.name}`}
+                  key={index}
+                  onClick={() => setShow(false)}
+                >
                   <li className="flex gap-1 border-b border-gray-300 p-3 items-center hover:bg-black/10">
                     {category.name}
                   </li>

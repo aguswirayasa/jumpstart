@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { BsCartCheckFill, BsFillGearFill } from "react-icons/bs";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 
@@ -22,9 +22,14 @@ interface ProfileNavProps {
 }
 
 const ProfileNav = ({ name, avatar, email, isLoading }: ProfileNavProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <HoverCard>
-      <HoverCardTrigger className="cursor-pointer">
+    <HoverCard open={open}>
+      <HoverCardTrigger
+        className="cursor-pointer"
+        onClick={() => setOpen(!open)}
+      >
         {isLoading ? (
           <div className="w-[40px] h-[40px] bg-gray-300 animate-pulse rounded-full"></div>
         ) : (
@@ -48,19 +53,19 @@ const ProfileNav = ({ name, avatar, email, isLoading }: ProfileNavProps) => {
             </div>
           </div>
           <ul className="mt-5">
-            <Link href={"/user/wishlist"}>
+            <Link href={"/user/wishlist"} onClick={() => setOpen(false)}>
               <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
                 <BiSolidBookmarkHeart />
                 <p className="text-black ">Wishlist</p>
               </li>
             </Link>
-            <Link href={"/user/orders-history"}>
+            <Link href={"/user/orders-history"} onClick={() => setOpen(false)}>
               <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
                 <BsCartCheckFill />
                 <p className="text-black ">Orders </p>
               </li>
             </Link>
-            <Link href={"/user/setting"}>
+            <Link href={"/user/setting"} onClick={() => setOpen(false)}>
               <li className="flex text-gray-700 gap-2 items-center border-t-2 border-gray-100 p-1 cursor-pointer select-none">
                 <BsFillGearFill />
                 <p className="text-black ">Setting</p>

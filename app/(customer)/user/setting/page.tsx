@@ -41,7 +41,7 @@ const ProfilePage = async () => {
 
   return (
     <div className="container mx-auto my-20 ">
-      <div className="grid grid-cols-12 gap-10">
+      <div className="grid grid-cols-12 gap-0 md:gap-10">
         <div className="hidden md:flex flex-col col-span-3 ">
           <Card className="flex flex-col p-5">
             <div className="flex items-center gap-3">
@@ -81,7 +81,7 @@ const ProfilePage = async () => {
         </div>
         <Card className="col-span-12 md:col-span-9 grid grid-cols-12 p-3 gap-3">
           <div className="col-span-12 md:col-span-4 flex flex-col justify-start items-center gap-3 p-3">
-            <div className="relative w-[300px] h-[300px] bg-gray-400 ">
+            <div className="relative w-[150px] h-[150px] md:w-[300px] md:h-[300px] bg-gray-400 ">
               <AddImageModal uid={profile.uid || ""} />
               <Image
                 src={profile.avatar || "/default-avatar.jpg"}

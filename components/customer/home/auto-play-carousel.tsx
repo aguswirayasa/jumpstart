@@ -20,6 +20,7 @@ const AutoPlayCarousel = ({ images }: AutoPlayCarouselProps) => {
       animationHandler="fade"
       infiniteLoop // Enable infinite loop
       className="w-full "
+      swipeable={false}
     >
       {images.map((image, index) => (
         <div
