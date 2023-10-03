@@ -358,18 +358,26 @@ export async function incrementSaleAmount(totalPrice: number) {
         createdAt: "desc",
       },
     });
-
-    // Increment the amount field by totalPrice
-    await prismadb.sale.update({
-      where: {
-        id: currentSale?.id,
-      },
-      data: {
-        amount: {
-          increment: totalPrice,
+    const currentDate = new Date();
+    if (currentSale?.createdAt.getMonth() !== currentDate.getMonth()) {
+      await prismadb.sale.create({
+        data: {
+          amount: totalPrice,
         },
-      },
-    });
+      });
+    } else {
+      // Increment the amount field by totalPrice
+      await prismadb.sale.update({
+        where: {
+          id: currentSale?.id,
+        },
+        data: {
+          amount: {
+            increment: totalPrice,
+          },
+        },
+      });
+    }
 
     console.log("Sale amount updated successfully.");
   } catch (error) {
