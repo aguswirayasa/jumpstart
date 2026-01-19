@@ -1,34 +1,90 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Jumpstart 🚀
 
-## Getting Started
+**Jumpstart** is a robust, scalable E-commerce application designed to provide a seamless shopping experience for users and powerful management tools for administrators. This project demonstrates a full-stack implementation of a modern digital storefront, featuring product browsing, secure checkout, and comprehensive content management.
 
-First, run the development server:
+## 📖 Project Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+The goal of Jumpstart is to bridge the gap between complex e-commerce requirements and user-friendly design. It serves two distinct types of users: **Customers**, who search for and purchase products, and **Administrators**, who manage the inventory and sales data.
+
+The application focuses on performance, scalability, and an intuitive UI/UX, leveraging modern web technologies to handle everything from product discovery to payment processing.
+
+### 👥 Roles
+
+*   **User (Customer):** The end-user who visits the platform to browse products, manage their profile, and make purchases.
+*   **Administrator:** The manager of the platform with privileged access to the backend dashboard for managing products, categories, and viewing orders.
+
+## ✨ Key Features
+
+### 🛒 For Users (Customers)
+*   **Product Discovery:** easily search and browse products with filtering options.
+*   **Shopping Cart:** Add items to a cart and manage quantities dynamically.
+*   **Wishlist:** Save products to a wishlist for future purchase.
+*   **Secure Checkout:** Seamless payment integration (Stripe) for safe transactions.
+*   **Order History:** View past orders and status updates.
+
+### 🛡️ For Administrators
+*   **Content Management System (CMS):** Add, edit, and delete products and categories.
+*   **Order Management:** View incoming orders and manage their status.
+*   **Dashboard:** Overview of platform performance and inventory.
+
+## 🛠️ Technologies Used
+
+This project leverages a modern tech stack to ensure reliability and performance.
+
+### Frontend
+*   **React.js:** For building a dynamic and responsive user interface.
+*   **Vite:** For fast build tooling and development environment.
+*   **Tailwind CSS:** For rapid, utility-first styling and responsive design.
+*   **Bootstrap:** Utilized for specific layout components and grid systems.
+
+### Backend & Database
+*   **Java Spring Boot:** Robust backend framework for handling API requests and business logic.
+*   **MySQL:** Relational database for storing user data, products, and orders.
+*   **PlanetScale:** (Optional/If used) Serverless MySQL platform.
+
+### Tools & Integrations
+*   **Stripe:** Integrated for secure credit card processing and payments.
+*   **Firebase:** Used for authentication and/or hosting (if applicable).
+*   **Git & GitHub:** Version control and repository hosting.
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally.
+
+### Prerequisites
+*   Node.js (v16+)
+*   Java JDK (v17+)
+*   MySQL Server
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/aguswirayasa/jumpstart.git
+    cd jumpstart
+    ```
+
+2.  **Frontend Setup**
+    ```bash
+    cd client
+    npm install
+    npm run dev
+    ```
+
+3.  **Backend Setup**
+    *   Navigate to the server directory.
+    *   Configure your `application.properties` with your MySQL database credentials.
+    *   Run the Spring Boot application.
+
+4.  **Environment Variables**
+    *   Create a `.env` file for your frontend (Stripe keys) and backend configurations as needed.
+
+## 📬 Contact
+
+**Agus Wirayasa**
+*   **GitHub:** [aguswirayasa](https://github.com/aguswirayasa)
+*   **Portfolio:** [Link to your portfolio]
+
+---
+*This project was developed for educational purposes and to demonstrate full-stack software engineering capabilities.*
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
