@@ -33,58 +33,13 @@ This project leverages a modern tech stack to ensure reliability and performance
 
 ### Frontend
 *   **React.js:** For building a dynamic and responsive user interface.
-*   **Vite:** For fast build tooling and development environment.
 *   **Tailwind CSS:** For rapid, utility-first styling and responsive design.
-*   **Bootstrap:** Utilized for specific layout components and grid systems.
 
 ### Backend & Database
-*   **Java Spring Boot:** Robust backend framework for handling API requests and business logic.
-*   **MySQL:** Relational database for storing user data, products, and orders.
-*   **PlanetScale:** (Optional/If used) Serverless MySQL platform.
+*   **NextJS:** For handling API requests and business logic.
+*   **PlanetScale:** Serverless MySQL platform.
 
 ### Tools & Integrations
 *   **Stripe:** Integrated for secure credit card processing and payments.
-*   **Firebase:** Used for authentication and/or hosting (if applicable).
 *   **Git & GitHub:** Version control and repository hosting.
 
-## 🚀 Getting Started
-
-Follow these steps to set up the project locally.
-
-### Prerequisites
-*   Node.js (v16+)
-*   Java JDK (v17+)
-*   MySQL Server
-
-### Installation
-
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/aguswirayasa/jumpstart.git
-    cd jumpstart
-    ```
-
-2.  **Frontend Setup**
-    ```bash
-    cd client
-    npm install
-    npm run dev
-    ```
-
-3.  **Backend Setup**
-    *   Navigate to the server directory.
-    *   Configure your `application.properties` with your MySQL database credentials.
-    *   Run the Spring Boot application.
-
-4.  **Environment Variables**
-    *   Create a `.env` file for your frontend (Stripe keys) and backend configurations as needed.
-
-## 📬 Contact
-
-**Agus Wirayasa**
-*   **GitHub:** [aguswirayasa](https://github.com/aguswirayasa)
-*   **Portfolio:** [Link to your portfolio]
-
----
-*This project was developed for educational purposes and to demonstrate full-stack software engineering capabilities.*
-```
